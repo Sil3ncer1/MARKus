@@ -1,0 +1,112 @@
+#custom-context-menu {
+    display: none;
+    position: absolute;
+    
+    
+    background-color: var(--menuBackground);
+    color: var( --menuTextColor);
+
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 1rem;
+
+    padding: 0.2rem;
+
+    z-index: 1000;
+}
+
+#custom-context-menu ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+}
+
+#custom-context-menu li {
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+    font-weight: 800;
+
+    padding: 0.3rem;
+    margin: 0.2rem;
+    
+    transition: 200ms ease-in-out;
+
+    cursor: pointer;
+
+    border-radius: 1rem;
+}
+
+#custom-context-menu hr {
+    margin: 0.25rem;
+}
+
+#custom-context-menu li:hover {
+    background-color: var(--menuHighlight);
+}
+
+#custom-context-menu img {
+    width: 1.5rem;
+    display: block;
+    margin: 0 auto;    
+    filter: var(--iconFilter);
+}
+
+
+
+#context-menu-item-add {
+    position: relative;
+}
+
+#context-menu-item-add:hover #context-menu-button-above,
+#context-menu-item-add:hover #context-menu-button-below {
+    visibility: visible;
+    opacity: 1; /* Make the buttons fully visible on hover */
+}
+
+#context-menu-button-above,
+#context-menu-button-below {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0; /* Initially set the buttons to be transparent */
+    
+    transition: 200ms ease-in-out;
+    width: 100%;
+    padding: 0.5rem;
+
+    background-color: var(--menuBackground);
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    text-align: center;
+    cursor: pointer;
+
+    transform: translateX(-10%);
+}
+
+
+
+#context-menu-item-add:hover #context-menu-button-above:hover,
+#context-menu-item-add:hover #context-menu-button-below:hover {
+    background-color: var(--menuHighlight);
+}
+
+
+
+#context-menu-button-above {
+    top: -2.5rem;
+    left: -1px;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    border-radius: 1rem 1rem 0 0 ;
+
+}
+
+#context-menu-button-below {
+    bottom: -2.5rem;
+    left: -1px;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    border-radius: 0 0 1rem 1rem;
+
+}

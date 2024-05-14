@@ -1,0 +1,26 @@
+#popup {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    background-color: var(--navBackground);
+    color: var(--textColor);
+    
+    font-size: 1.2rem;
+    padding: 1rem 3rem;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 1rem;
+
+    transition: top 0.3s ease-in-out;
+
+    z-index: 1024;
+}
+  
+.popup-hide {
+    top: -100px !important;
+}
+
+.popup-show {
+    top: 3rem !important;
+}

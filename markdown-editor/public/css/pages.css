@@ -1,0 +1,135 @@
+#page-container {
+    margin-top: 2rem;
+}
+
+.page {
+    width: 21cm; 
+    height: 29.7cm;
+    
+    page-break-before: always;
+    
+    background-color: white;
+    color: black;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+
+    padding: 2.0cm 0.75cm 2.0cm 2.0cm;
+    margin-bottom: 3rem;
+
+    font-size: 1.25rem;
+
+    box-sizing: border-box;
+    resize: none;
+}
+
+#page-container #document-textfield {
+    margin: 0;
+    padding: .6rem;
+    display: grid;
+    grid-template-columns: auto 3%;
+    align-items: center;
+    position: relative;
+    gap: 1rem; 
+}
+
+#page-container #document-textfield::before {
+    content: ''; 
+
+    position: absolute;
+    top: 0;
+    left: -2rem;
+    bottom: 0;
+
+    width: var(--border-size); 
+    background-color: gray; 
+    z-index: 10;
+}
+
+#page-container #document-textarea {
+    display: block;
+    width: 100%;
+    
+    height: 0;
+
+    position: relative; 
+    padding: 0;
+    margin: 0;
+    
+    outline: none;
+    border: none;
+    
+    overflow: hidden;
+    resize: none;
+
+    font-size: 1.25rem;
+    color: black;
+    background-color: white;
+}
+
+
+/* individual styling for the html elements */
+#page-container pre {
+    background-color: #dcdcdc;
+    padding: 1rem;
+    border-left: var(--border-size) solid black;
+}
+
+#page-container blockquote {
+    border-left: var(--border-size) solid black;
+    margin-left: 5rem;
+    padding-left: 2rem;
+}
+
+#page-container blockquote p {
+    padding: 0;
+    margin: 0;
+}
+
+#page-container hr {
+    border: 0;
+    border-top: 2px solid black;
+    width: 100%;
+    margin: auto;
+}
+
+#page-container ul {
+    margin-left: 1.5rem;
+}
+
+
+/* Tables */
+#page-container table {
+    border-collapse: collapse;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+#page-container thead tr {
+    background-color: #333333;
+    color: white;
+    text-align: left;
+}
+
+#page-container th,
+#page-container td {
+    padding: 1rem 1.5rem
+}
+
+#page-container tbody tr {
+    border-bottom: 1px solid var(--thirdColor);
+}
+
+#page-container tbody tr:nth-of-type(even) {
+    background-color: #dcdcdc;
+}
+
+#page-container tbody tr:last-of-type {
+    border-bottom: 2px solid black;
+}
+
+#page-container a {
+    color: var(--accentColor);
+}

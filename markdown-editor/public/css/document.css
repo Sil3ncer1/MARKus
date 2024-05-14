@@ -1,0 +1,114 @@
+/* individual styling for the html elements */
+#document-doc pre, #document-doc style, #document-doc script, #document-doc link , #document-doc object, #document-doc iframe {
+    white-space: pre-wrap;
+    background-color: var(--secondaryColor);
+    padding: 1rem;
+    border-left: var(--border-size) solid var(--textColor);
+}
+
+#document-doc style, #document-doc script, #document-doc link , #document-doc object, #document-doc iframe {
+    display: block;
+    white-space: pre-wrap;
+    background-color: var(--secondaryAccentColor);
+    padding: 1rem;
+    border-left: var(--border-size) solid var(--textColor);
+}
+
+#document-doc * blockquote {
+    border-left: var(--border-size) solid var(--textColor);
+    margin-left: 5rem;
+    padding-left: 2rem;
+    margin-bottom: 0;
+}
+
+#document-doc blockquote p {
+    padding: 0;
+    margin: 0;
+}
+
+#document-doc li p {
+    display: block;
+}
+
+#document-doc code {
+    color: var(--textColor);
+    background-color: var(--secondaryColor) ; 
+    border-radius: 3px; 
+    border: 1px solid #ccc; 
+    padding: 0.0em 0.4em;
+    margin: -1px;
+}
+
+#document-doc pre code {
+    padding: 0em 0em;
+    border: none;
+}
+
+
+#document-doc hr {
+    border: 0;
+    border-top: 2px solid var(--textColor);
+    width: 99%;
+    margin: auto;
+}
+
+#document-doc ul {
+    list-style-position: outside;
+}
+
+#document-doc label {
+    background-color: var(--accentColor);
+}
+
+.task-list-item-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+
+/* Tables */
+#document-doc table {
+    border-collapse: collapse;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+#document-doc thead tr {
+    background-color: var(--accentColor);
+    color: var(--textColor);
+    text-align: left;
+}
+
+#document-doc th,
+#document-doc td {
+    padding: 1rem 1.5rem
+}
+
+#document-doc tbody tr {
+    border-bottom: 1px solid var(--thirdColor);
+}
+
+#document-doc tbody tr:nth-of-type(even) {
+    background-color: var(--secondaryColor);
+}
+
+#document-doc tbody tr:last-of-type {
+    border-bottom: 2px solid var(--accentColor);
+}
+
+#document-doc a {
+    color: var(--accentColor);
+}
+
+@media print {
+    .document-editable-selected{
+        border: none;
+    }
+
+    #document-doc style, #document-doc script,#document-doc link {
+        display: none;
+    }
+    
+}

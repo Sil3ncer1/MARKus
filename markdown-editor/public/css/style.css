@@ -1,0 +1,211 @@
+/* colors: https://colorhunt.co/palette/161a3031304db6bbc4f0ece5 */
+
+/* VARIABLES  */
+:root {
+    --border-size: 4px;
+}
+
+
+html {
+    --backgroundColor: #fff;
+    --textColor: #363636;
+    --sidebarTextColor: #363636;
+    --iconFilter: invert(100%);
+
+    --mainColor: #f0f0f0;
+    --secondaryColor: #dcdcdc;
+    --thirdColor: #333333;
+    --accentColor: #00b894;
+    --secondaryAccentColor: #075b4a;
+
+    --menuBackground: #fff;
+    --menuHighlight: rgb(180, 180, 180);
+    --menuLight: #fff;
+    --menuDark: #141414;
+    --menuTextColor: #363636;
+    
+    --navBackground: #fff;
+    --navHighlight: rgb(180, 180, 180);
+    --navLight: #fff;
+    --navTextColor: #363636;
+
+    --codeText: #383a42;
+    --codeComment: #a0a1a7;
+    --codeKeyword: #a626a4;
+    --codeVariable: #e45649;
+    --codeLiteral: #0184bc;
+    --codeAddition: #50a14f;
+    --codeMeta: #986801;
+    --codeMetaString: #c18401;
+    }
+
+
+html[data-theme='dark'] {
+    --backgroundColor: #282930;
+    --textColor: #f5f5f5;
+    --sidebarTextColor: #f5f5f5;
+    --iconFilter: invert(0%);
+
+    --mainColor: #161A30;
+    --secondaryColor: #38374b;
+    --thirdColor: #B6BBC4;
+    --accentColor: #009879;
+    --secondaryAccentColor: #075b4a;
+
+    --menuBackground: #141414;
+    --menuHighlight: rgb(112, 112, 112);
+    --menuLight: #fff;
+    --menuDark: #141414;
+    --menuTextColor: #f5f5f5;
+
+    --navBackground: #141414;
+    --navHighlight: rgb(112, 112, 112);
+    --navLight: #fff;
+    --navTextColor: #fff;
+
+
+    /* One Dark Farbschema from VScode */
+    --codeText: #abb2bf;
+    --codeComment: #5c6370;
+    --codeKeyword: #c678dd;
+    --codeVariable: #e06c75;
+    --codeLiteral: #98c379;
+    --codeAddition: #61afef;
+    --codeMeta: #d19a66;
+    --codeMetaString: #e5c07b;
+}
+
+
+ /* STYLING */
+html {
+    background-color: var(--backgroundColor);
+    color: var(--textColor);
+    /* font-family: Arial, Helvetica, sans-serif; */
+    font-family: "Cousine", monospace;
+    font-size: .75rem;
+    margin: 0;
+    transition: 500ms ease-in-out;
+}
+
+
+#zoom-container {
+    transform-origin: left top;
+    width: 90%;
+    height: auto;
+    margin-left: 5%;
+    margin-right: 5%;
+    
+    position: absolute;
+    transition: transform 0.3s ease; /* Add smooth transition for zooming */
+}
+
+#document-doc {
+    position: relative;
+    overflow: auto;
+
+
+}
+@media screen and (max-width:1063px) {
+    #zoom-container {
+        transform-origin: left top;
+        width: 80%;
+        height: auto;
+        margin-left: 10%;
+        margin-right: 10%;
+        
+        position: absolute;
+        transition: transform 0.3s ease; /* Add smooth transition for zooming */
+    }
+}
+
+@media print {
+
+    @page { 
+        margin: 0mm;  /* this affects the margin in the printer settings */
+    }
+
+    html {
+        --backgroundColor: #fff;
+        --textColor: #363636;
+        --sidebarTextColor: #f5f5f5;
+
+        --mainColor: #f0f0f0;
+        --secondaryColor: #dcdcdc;
+        --thirdColor: #333333;
+        --accentColor: #00b894;
+
+        --navBackground: #141414;
+        --navHighlight: rgb(112, 112, 112);
+        --navLight: #fff;
+        --navTextColor: #fff;
+
+
+        --codeText: #383a42;
+        --codeComment: #a0a1a7;
+        --codeKeyword: #a626a4;
+        --codeVariable: #e45649;
+        --codeLiteral: #0184bc;
+        --codeAddition: #50a14f;
+        --codeMeta: #986801;
+        --codeMetaString: #c18401;
+    }
+
+    html[data-theme='dark'] {
+        --backgroundColor: #fff;
+        --textColor: #363636;
+        
+
+        --mainColor: #f0f0f0;
+        --secondaryColor: #dcdcdc;
+        --thirdColor: #333333;
+        --accentColor: #00b894;
+
+        --navBackground: #141414;
+        --navHighlight: rgb(112, 112, 112);
+        --navLight: #fff;
+        --navTextColor: #fff;
+
+
+        /* One Dark Farbschema from VScode */
+        --codeText: #383a42;
+        --codeComment: #a0a1a7;
+        --codeKeyword: #a626a4;
+        --codeVariable: #e45649;
+        --codeLiteral: #0184bc;
+        --codeAddition: #50a14f;
+        --codeMeta: #986801;
+        --codeMetaString: #c18401;
+    }
+
+
+    html {
+        -webkit-print-color-adjust: exact;
+    }
+
+    /* Printing only the document*/
+    body {
+        visibility: hidden;
+    }
+
+    .document-editable{
+        visibility: visible;
+        break-inside: avoid;
+
+    }
+
+    .document-drag-handel{
+        visibility: hidden;
+    }
+
+    /* Styling of elements in Print*/
+    #document-doc table {
+        border-collapse: collapse;
+        font-size: 0.9em;
+        font-family: sans-serif;
+        min-width: 400px;
+
+    }
+
+}
+
+
