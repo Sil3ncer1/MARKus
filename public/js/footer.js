@@ -41,9 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-  
-
-// Left Footer
+// Left Footer 
+/**
+ * Setting the statistics of the document
+ * @return {void} 
+ */
 function setDocumentStats() {
     const wordCounter = document.getElementById('footer-word-count');
     const characterCounter = document.getElementById('footer-character-count');
@@ -57,7 +59,10 @@ function setDocumentStats() {
     characterCounterSettings.innerHTML = stats.characters;
 }
 
-
+/**
+ * Getting the statistics of the document
+ * @return {void} 
+ */
 function getDocumentStats() { 
     let docElements = getDocumentElements()
 
@@ -70,7 +75,11 @@ function getDocumentStats() {
 }
 
 
-
+/**
+ * Returns the amount of words in the document
+ * @param {HTMLElement} docElements
+ * @return {number} 
+ */
 function getWordCount(docElements) {
     let words = 0;
 
@@ -84,6 +93,11 @@ function getWordCount(docElements) {
     return words;
 }
 
+/**
+ * Returns the amount of characters in the document
+ * @param {HTMLElement} docElements
+ * @return {number} 
+ */
 function getCharacterCount(docElements) {
     let characters = 0;
 
@@ -160,7 +174,12 @@ presentationBtn.addEventListener('click', event => {
     showSlides(slideIndex);
 });
 
-
+/**
+ * Switches the viewing mode
+ * @param {HTMLElement} element
+ * @param {number} mode
+ * @return {void} 
+ */
 function swapViewingMode(element, mode) {
     document.getElementById("footer-selected").id = "";
     element.parentNode.id = "footer-selected";
@@ -178,7 +197,13 @@ function swapViewingMode(element, mode) {
     setDocumentStats();
 }
 
-
+/**
+ * Turn a list into Pages
+ * @param {HTMLElement} list
+ * @param {String} containerName
+ * @param {String} pageName
+ * @return {HTMLElement} 
+ */
 function turnListIntoPages(list, containerName, pageName) {
     const doc = document.getElementById("document-doc");
     const pages = document.getElementById(containerName);
@@ -215,7 +240,11 @@ function turnListIntoPages(list, containerName, pageName) {
     }
 }
 
-
+/**
+ * Check whether a page is full
+ * @param {String} containerName
+ * @return {void} 
+ */
 function checkIfPagesAreFull(containerName) {
     const pages = document.getElementById(containerName);
 
@@ -250,6 +279,11 @@ function checkIfPagesAreFull(containerName) {
     }
 }
 
+/**
+ * Turn pages into a document
+ * @param {String} containerName
+ * @return {void} 
+ */
 function turnPagesIntoDocument(containerName) {
     const doc = document.getElementById("document-doc");
     const pages = document.getElementById(containerName);
@@ -278,6 +312,11 @@ function currentSlide(n) {
   showSlides(slideIndex = n);
 }
 
+/**
+ * Show the slide to the corresponding number
+ * @param {number} n
+ * @return {void} 
+ */
 function showSlides(n) {
   let slides = document.getElementsByClassName("slide");
   console.log(slides);

@@ -166,6 +166,11 @@ exportHTMLBtn.addEventListener('click', event => {
     showPopup("Document exported as HTML");
 });
 
+/**
+ * Generate a HTML String for the elements
+ * @param {HTMLElement} elements
+ * @return {string} 
+ */
 function generateHTMLString(elements) {
     let htmlString = '<!DOCTYPE html>\n<html>\n<head>\n<title>Exported Document</title>\n</head>\n<body>\n';
 
@@ -209,7 +214,11 @@ exportMarkdownBtn.addEventListener('click', event => {
 });
 
 
-
+/**
+ * Generate a Markdown String for the elements
+ * @param {HTMLElement} elements
+ * @return {string} 
+ */
 function generateMarkdownString(elements) {
     const markdownPromises = elements.map(async element => {
         return await convertHTMLtoMarkdown(element.outerHTML);
@@ -218,6 +227,13 @@ function generateMarkdownString(elements) {
     return Promise.all(markdownPromises).then(markdownArray => markdownArray.join('\n\n'));
 }
 
+/**
+ * Download the current file
+ * @param {string} htmlString
+ * @param {string} fileType
+ * @param {string} fileName
+ * @return {void} 
+ */
 function downloadFile(htmlString, fileType, fileName) {
     const blob = new Blob([htmlString], { type: fileType });
     const url = URL.createObjectURL(blob);
@@ -235,6 +251,11 @@ function downloadFile(htmlString, fileType, fileName) {
 
 
 // Undo/Redo
+/**
+ * Update the content of the document
+ * @param {string} content
+ * @return {void} 
+ */
 function updateDocContent(content) {
     let doc = document.getElementById('document-doc');
     doc.innerHTML = content;
@@ -457,7 +478,10 @@ settingsBtn.addEventListener('click', toggleSettingsMenu);
 settingsCloseBtn.addEventListener('click', toggleSettingsMenu);
 menuSettingsBtn.addEventListener('click', toggleSettingsMenu);
 
-
+/**
+ * Show the settings menu
+ * @return {void} 
+ */
 function toggleSettingsMenu() {
     settingsMenu.style.display = (settingsMenu.style.display == "none") ? "block" : "none";
 }
@@ -486,6 +510,11 @@ tabs.forEach(tab => {
   });
 });
 
+/**
+ * Toggle the settings options based on the id
+ * @param {string} id
+ * @return {void} 
+ */
 function toggleSettingsOptions(id) {
     var options = document.getElementById(id);
     options.classList.toggle('settings-sub-options-active');
@@ -513,7 +542,10 @@ document.getElementById('sidebar').addEventListener('mousedown', function (e) {
     e.preventDefault();
 });
 
-
+/**
+ * Get the current word of the curser selected
+ * @return {String} 
+ */
 function getCurrentWord() {
     let textarea = document.getElementById('document-textarea');
     let cursorPosition = textarea.selectionStart;
@@ -534,7 +566,12 @@ function getCurrentWord() {
     return currentWord;
 }
 
-
+/**
+ * Show a popup with a message
+ * @param {string} string
+ * @param {boolean} dark
+ * @return {void} 
+ */
 function showPopup(string, dark = true) {
     clearTimeout(hidePopup);
     popup.innerHTML = string;
@@ -552,13 +589,21 @@ function showPopup(string, dark = true) {
     setTimeout(hidePopup, 2000);
 }
 
+/**
+ * Hide the popups
+ * @return {void} 
+ */
 function hidePopup() {
     popup.classList.remove('popup-show');
     popup.classList.add('popup-hide');
 }
 
 
-
+/**
+ * Toggle the selected word to the regex
+ * @param {String} regex
+ * @return {void} 
+ */
 async function toggleWord(regex) {
     const focusedTextarea = document.getElementById('document-textarea');
 

@@ -78,13 +78,19 @@ const DefaultSettings = {
 }
 
 
-
+/**
+ * Save the current settings
+ * @return {void} 
+ */
 function saveSettings() {
     const jsonString = JSON.stringify(UserSettings);
     localStorage.setItem('settings', jsonString);
 }
 
-
+/**
+ * Load the local settings
+ * @return {void} 
+ */
 function LoadSettings() {
     if(localStorage.getItem('settings')) {
         const savedJSONstring = localStorage.getItem('settings');
@@ -100,6 +106,10 @@ function LoadSettings() {
     updateDisplaySidebarZoom(UserSettings.sidebarZoom);
 }
 
+/**
+ * Update all settings
+ * @return {void} 
+ */
 function UpdateSettings() {
     UserSettings = {
         darkmode: settingsDisplayDarkmode.checked,
@@ -214,6 +224,11 @@ settingsPrintFile.addEventListener('click', event => {
 
 
 // Display
+/**
+ * Update Dark/Light mode
+ * @param {boolean} value
+ * @return {void} 
+ */
 function updateDisplayDarkmode(value) {
     settingsDisplayDarkmode.checked = value;
     if(!value) {
@@ -230,7 +245,11 @@ settingsDisplayDarkmode.addEventListener('click', event => {
     UpdateSettings();
 });
 
-
+/**
+ * Update zoom value
+ * @param {number} value
+ * @return {void} 
+ */
 function updateDisplayDocumentZoom(value) {
     const zoomSlider = document.getElementById("zoom-slider");
     const zoomValue = document.getElementById("zoom-value");
@@ -261,7 +280,11 @@ settingsDisplayDocumentZoom.addEventListener('input', event => {
     UpdateSettings();
 });
 
-
+/**
+ * Update font value
+ * @param {string} value
+ * @return {void} 
+ */
 function updateDiaplyFontFontstyle(value) {
     settingsDisplayFontFontstyle.value = value;
 
@@ -281,7 +304,11 @@ settingsDisplayFontFontstyle.addEventListener('input', event => {
     UpdateSettings();
 });
 
-
+/**
+ * Update font size value
+ * @param {string} value
+ * @return {void} 
+ */
 function updateDisplayFontsize(value) {
     settingsDisplayFontSize.value = value;
     document.getElementById('document-doc').style.fontSize = value + "px";
@@ -294,7 +321,11 @@ settingsDisplayFontSize.addEventListener('input', event => {
 });
 
 
-
+/**
+ * Update ui zoom value
+ * @param {string} value
+ * @return {void} 
+ */
 function updateDisplaySidebarZoom(value) {
     settingsDisplaySidebarZoom.value = value;
     document.getElementById('sidebar-list').style.transformOrigin = 'top';
@@ -318,6 +349,10 @@ settingsReset.addEventListener('click', event => {
 
 
 // Snippets
+/**
+ * Load snippets to the settings
+ * @return {void}  
+ */
 function loadSnippetCards() {
     const snippetContainer = document.getElementById('settings-snippets-snippet-list');
 
@@ -435,7 +470,10 @@ settingsSnippetsAddSnippet.addEventListener('click', event => {
     loadSnippetCards();
 });
 
-
+/**
+ * Convert the snippets to json
+ * @return {string} 
+ */
 function snippetsToJson() {
     const jsonString = JSON.stringify(customPlugins, null, 2);
     return jsonString;
@@ -506,7 +544,10 @@ settingsSnippetsSaveSnippets.addEventListener('click', event => {
     showPopup("Saved snippets to browser", false);
 });
 
-
+/**
+ * Load the local saved snippets
+ * @return {void} 
+ */
 function loadSavedSnippets() {
     if(!localStorage.getItem('snippets')) return;
 
@@ -528,7 +569,10 @@ settingsSnippetsDelteSnippets.addEventListener('click', event => {
     }
 });
 
-
+/**
+ * Recalculate the textarea height
+ * @return {void} 
+ */
 function fixTextareaHeights() {
     settingsSnippetsSnippetRegex.style.height = settingsSnippetsSnippetRegex.scrollHeight + "px";
     settingsSnippetsSnippetHtml.style.height = settingsSnippetsSnippetHtml.scrollHeight + "px";

@@ -1,16 +1,15 @@
 ---
-layout: Test Layout
-title: Test Title
+layout: test Layout
+title: test Titel
 ---
 
-![fh-logo](https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Markdown-mark.svg/1280px-Markdown-mark.svg.png){208,128}
+![fh-logo](https://www.fh-dortmund.de/openGraph-200x200.png){100,100}
 
-# Title h1
-## Title h2
-### Title h3
+# Guten Morgen
+## Guten Morgen in kleiner
 * * *
 ### Plain Text:
-**Lorem** *ipsum* `dolor sit amet`, ~~consectetur~~ [Github](https://github.com/Sil3ncer1/MARKus) ??Esse??.  H^2O laboriosam earum, neque, illo ducimus at ipsam, dolor consequatur maiores harum inventore molestias repudiandae eius veritatis necessitatibus exercitationem temporibus reprehenderit?
+**Lorem** *ipsum* `dolor sit amet`, ~~consectetur~~ [Github](https://github.com/YukkiTimmy/projektarbeit-markdown) ??Esse??.  H^2O laboriosam earum, neque, illo ducimus at ipsam, dolor consequatur maiores harum inventore molestias repudiandae eius veritatis necessitatibus exercitationem temporibus reprehenderit?
 ### Code Block:
 ```
 function heapSort(arr) {
@@ -50,13 +49,13 @@ function heapSort(arr) {
 - [x] this is a complete item
 - [ ] this is an incomplete item
 
-### Tables:
+### Tabellen:
 | Option  | Description                                                                |
 | ---     | ---                                                                        |
 | data    | path to data files to supply the data that will be passed into templates.  |
 | engine  | engine to be used for processing templates. Handlebars is the default.     |
 | ext     | extension to be used for dest files.                                       |
-### Block quotation:
+### Blockzitat:
 > Blockquotes can also be nested...
 > 
 > > ...by using additional greater-than signs right next to each other...

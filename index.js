@@ -58,7 +58,8 @@ turndownService.addRule('keepattributes', {
           !(
             node.classList.contains('task-list-item') 
             || node.classList.contains('contains-task-list') 
-            ||  node.classList.contains('task-list-item-checkbox'))
+            ||  node.classList.contains('task-list-item-checkbox')
+            ||  node.id == 'settings-preview-window-container')
           )
 
     return attrTest;

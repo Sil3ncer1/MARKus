@@ -63,17 +63,31 @@ function createPlugin(name, icon, baseRegex, baseHtml){
   return customPlugin;
 }
 
-
+/**
+ * Convert the replacementString to toHtmlregex
+ * @param {string} replacementString
+ * @return {string} 
+ */
 function convertRegexPattern(replacementString) {
   const regexPattern = replacementString.replace(/\\\$\d/g, '(.+?)');
   return regexPattern;
 }
 
+/**
+ * Convert the replacementHTMLString to toMarkdownregex
+ * @param {string} replacementHTMLString
+ * @return {string} 
+ */
 function convertHTML(replacementHTMLString) {
   const regexPattern = replacementHTMLString.replace(/\\\$\d/g, '').replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&').replace(/\\\$\d/g, '(.+?)');
   return regexPattern;
 }
 
+/**
+ * Convert the replacementHTMLString to toMarkdown
+ * @param {string} regex
+ * @return {string} 
+ */
 function generateStringFromRegex(regex){
   const regexString = regex.replace(/\\/g, '');
   return regexString;
@@ -562,7 +576,7 @@ function addEventListenersToTextArea(textarea) {
       else if (textarea.value.length == 0) replaceElementWithTextarea(textcontainer.previousElementSibling);
     }
 
-    // TO-DO:  "*   [x]  @mentions, #refs, links, **formatting**, and ~~tags~~ supported" doesnt linebreak valve pls fix
+    // TO-DO:  "*   [x]  @mentions, #refs, links, **formatting**, and ~~tags~~ supported" doesnt linebreak
     else if (e.key == "Enter") {
       const cursorPos = textarea.selectionStart;
       const textLines = textarea.value.substr(0, cursorPos).split("\n");
@@ -862,6 +876,10 @@ function handleFiles(files) {
   }
 }
 
+/**
+ * Load last file
+ * @return {void} 
+ */ 
 function loadLastFile() {
   const doc = document.getElementById('document-doc');
 
@@ -899,7 +917,7 @@ function loadExample() {
 }
 
 /**
- * Add drag and dropping to the index.html
+ * Add Event Listeners to all Context-Menu Buttons
  * @return {void} 
  */ 
 function addEventListenersToContextMenu() {
@@ -1082,8 +1100,10 @@ function getDocumentElements() {
 
 
 
-
-
+/**
+ * Auto save current file
+ * @return {void} 
+ */ 
 function autoSaveDocument() {
   const metadata = document.getElementById('settings-meta');
   const doc = document.getElementById('document-doc');
@@ -1098,7 +1118,10 @@ function autoSaveDocument() {
   localStorage.setItem('autoSave', documentText);
 }
 
-
+/**
+ * Load auto save file
+ * @return {void} 
+ */ 
 function loadAutoSave() {
   if(!localStorage.getItem('autoSave')) return false;
 
