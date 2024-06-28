@@ -302,8 +302,10 @@ headingBtn.addEventListener('click', event => {
     let newText = textWithoutHashes;
     if (headingLevel <= 6)
         newText = '#'.repeat(headingLevel) + ' ' + textWithoutHashes;
- 
-    focusedTextarea.value = newText;
+    
+    focusedTextarea.setSelectionRange(0, focusedTextarea.value.length);
+    document.execCommand('insertText', false, newText);
+
 });
 
 strikethroughBtn.addEventListener('click', event => {
@@ -321,7 +323,8 @@ clearFormattingBtn.addEventListener('click', event => {
 
     let selectedText = focusedTextarea.value.substring(focusedTextarea.selectionStart, focusedTextarea.selectionEnd);
     let modifiedText = selectedText.replace(/\[\]|\[x\]|!|\~|\*{1,2}|\>|\[|\]|\(|\)|\_|\#+\s*|```|`/g, '');
-    focusedTextarea.setRangeText(modifiedText);
+    focusedTextarea.setSelectionRange(0, focusedTextarea.value.length);
+    document.execCommand('insertText', false, modifiedText);
 });
 
 // List presets
@@ -377,7 +380,9 @@ tableBtn.addEventListener('click', async event => {
             newTable += "|\n";
         }
         newTable += "\n";
-        focusedTextarea.setRangeText(newTable);
+
+
+        document.execCommand('insertText', false, newTable);
         tablepicker.style.visibility = "hidden"
         focusedTextarea.style.height = 'auto';
         focusedTextarea.style.height = (focusedTextarea.scrollHeight) + 'px';
@@ -438,7 +443,9 @@ quoteBtn.addEventListener('click', event => {
 
     modifiedText = text.substring(0, startOfLine) + "> " + selectedText + text.substring(endOfLine);
 
-    focusedTextarea.value = modifiedText;
+    focusedTextarea.setSelectionRange(0, focusedTextarea.value.length);
+    document.execCommand('insertText', false, modifiedText);
+
 
     // Set the cursor position back to its original location
     focusedTextarea.setSelectionRange(selectionStart+2, selectionEnd + (modifiedText.length - text.length));
@@ -624,7 +631,9 @@ async function toggleWord(regex) {
     }
 
     outputString = await toggleMarkdownSyntax(inputString, regex);
-    focusedTextarea.setRangeText(outputString , selectedFrom, selectedTo);
+    focusedTextarea.setSelectionRange(selectedFrom, selectedTo);
+    document.execCommand('insertText', false, outputString);
+    
     
     focusedTextarea.style.height = 'auto';
     focusedTextarea.style.height = (focusedTextarea.scrollHeight) + 'px';

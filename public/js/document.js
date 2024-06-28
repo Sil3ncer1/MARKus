@@ -969,7 +969,7 @@ function addEventListenersToContextMenu() {
     documentElement = document.getElementById('document-doc');
     let clickedElement = documentElement.querySelector('.document-editable-selected');
     if (!clickedElement) return;
-    clickedElement.firstChild.style.textAlign = 'left';
+    clickedElement.firstChild.removeAttribute('style');
   });
 
   let alignCenterBtn = document.getElementById('contextMenu-alignCenter');
