@@ -90,10 +90,10 @@ html {
 
 #zoom-container {
     transform-origin: left top;
-    width: 90%;
+    width: 80%;
     height: auto;
-    margin-left: 5%;
-    margin-right: 5%;
+    margin-left: 10%;
+    margin-right: 10%;
     
     position: absolute;
     transition: transform 0.3s ease; /* Add smooth transition for zooming */
@@ -108,10 +108,10 @@ html {
 @media screen and (max-width:1063px) {
     #zoom-container {
         transform-origin: left top;
-        width: 80%;
+        width: 70%;
         height: auto;
-        margin-left: 10%;
-        margin-right: 10%;
+        margin-left: 15%;
+        margin-right: 15%;
         
         position: absolute;
         transition: transform 0.3s ease; /* Add smooth transition for zooming */
