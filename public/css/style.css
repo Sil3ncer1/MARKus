@@ -94,10 +94,10 @@ html {
 #zoom-container {
     transform-origin: left top;
     left: 25rem;
-    width: 100%-25rem;
+
     height: auto;
 
-    margin-right: 15%;
+    margin-right: 25rem;
     
     position: absolute;
     transition: transform 0.3s ease, margin 0.3s linear; /* Add smooth transition for zooming and screen size */
@@ -106,15 +106,10 @@ html {
 #document-doc {
     position: relative;
     overflow: auto;
-
-
 }
-@media screen and (max-width:1063px) {
+@media screen and (max-width:1600px) {
     #zoom-container {
-
         margin-right: 5%;
-        
-
     }
 }
 
