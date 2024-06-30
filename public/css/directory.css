@@ -1,7 +1,7 @@
 
 #directory {
-    --directorySizeOpen: 14%;
-    --directorySizeClose: 0%;
+    --directorySizeOpen: 22rem;
+    --directorySizeClose: 0rem;
 
     position: fixed;
     left: 0;
@@ -19,7 +19,7 @@
 }
 
 #directory-button-hitbox{
-    --directoryHitboxSize: 17%;
+    --directoryHitboxSize: 25rem;
 
     position: fixed;
     left: 0%;
@@ -65,12 +65,3 @@
     filter: var(--iconFilter);
 }
 
-@media screen and (max-width:1063px) {
-    #directory {
-        --directorySizeOpen: 24%;
-    }
-
-    #directory-button-hitbox {
-        --directoryHitboxSize: 27%;
-    }
-}

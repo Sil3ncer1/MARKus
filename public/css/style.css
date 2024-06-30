@@ -87,12 +87,16 @@ html {
     transition: 500ms ease-in-out;
 }
 
+#directory-editor-layout{
+    width: 100%;
+}
 
 #zoom-container {
     transform-origin: left top;
-    width: 70%;
+    left: 25rem;
+    width: 100%-25rem;
     height: auto;
-    margin-left: 15%;
+
     margin-right: 15%;
     
     position: absolute;
@@ -108,10 +112,7 @@ html {
 @media screen and (max-width:1063px) {
     #zoom-container {
 
-        width: 70%;
-        height: auto;
-        margin-left: 25%;
-        margin-right: 0%;
+        margin-right: 5%;
         
 
     }
