@@ -16,11 +16,11 @@ directoryHitboxBtn.addEventListener("mouseleave", (event) => {
 });
 
 directoryBtn.addEventListener("click", (event) => {
-    if(directory.style.width == "9%"){
-        directory.style.width = "0%";
+    if(directory.style.width == "var(--directorySizeOpen)"){
+        directory.style.width = "var(--directorySizeClose)";
         directoryBtn.style.left = "2.5em";
     }else{
-        directory.style.width = "9%";
-        directoryBtn.style.left = "9%";
+        directory.style.width = "var(--directorySizeOpen)";
+        directoryBtn.style.left = "var(--directorySizeOpen)";
     }
 });

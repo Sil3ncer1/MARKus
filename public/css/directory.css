@@ -1,23 +1,31 @@
+
 #directory {
+    --directorySizeOpen: 14%;
+    --directorySizeClose: 0%;
+
     position: fixed;
     left: 0;
     top: 0;
 
-    width: 0%;
+    width: var(--directorySizeClose);
     height: 100%;
 
     background-color: var(--navBackground);
     box-shadow: 4px -4px rgba(0, 0, 0, 0.25);
 
     transition: 200ms ease-in-out;
+
+    z-index: 15;
 }
 
 #directory-button-hitbox{
+    --directoryHitboxSize: 17%;
+
     position: fixed;
     left: 0%;
     top: 0;
 
-    width: 12%;
+    width: var(--directoryHitboxSize);
     height: 100%;
 
     opacity: 1;
@@ -42,7 +50,6 @@
     border-radius: 0 10px 10px 0;
 
     transition: width 250ms, left 200ms ease-in-out;
-    
     align-items: center;
     justify-content: center;
 
@@ -56,4 +63,14 @@
     align-self: center;
 
     filter: var(--iconFilter);
+}
+
+@media screen and (max-width:1063px) {
+    #directory {
+        --directorySizeOpen: 24%;
+    }
+
+    #directory-button-hitbox {
+        --directoryHitboxSize: 27%;
+    }
 }
