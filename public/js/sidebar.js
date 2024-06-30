@@ -57,10 +57,10 @@ var toolbarScale = 1;
  * @return {void} 
  */
 document.getElementById('sidebar').addEventListener('wheel', event => {
-    event.preventDefault();
+    
     if (event.ctrlKey) {
 
-        
+        event.preventDefault();
         toolbarScale += event.deltaY > 0 ? -0.1 : 0.1; // Adjust scale factor based on scroll direction
         
         if (toolbarScale < 0.8) toolbarScale = 0.8;
