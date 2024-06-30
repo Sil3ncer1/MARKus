@@ -1,4 +1,20 @@
 
+#directory-button-hitbox{
+    --directoryHitboxSize: 25rem;
+
+    position: fixed;
+    left: 0%;
+    top: 0;
+
+    width: var(--directoryHitboxSize);
+    height: 100%;
+
+    opacity: 1;
+    z-index: 15;
+
+}
+
+
 #directory {
     --directorySizeOpen: 20rem;
     --directorySizeClose: 0rem;
@@ -20,20 +36,6 @@
     z-index: 15;
 }
 
-#directory-button-hitbox{
-    --directoryHitboxSize: 25rem;
-
-    position: fixed;
-    left: 0%;
-    top: 0;
-
-    width: var(--directoryHitboxSize);
-    height: 100%;
-
-    opacity: 1;
-
-
-}
 
 #directory-button{
     --directorySizeOpen: 22.5rem;
@@ -76,6 +78,7 @@
     padding-right: 1rem;
     padding-top: 5%;
     padding-left: 1rem;
+    z-index: 15;
 }
 
 #directory-container ul{
