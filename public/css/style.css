@@ -93,14 +93,16 @@ html {
 
 #zoom-container {
     transform-origin: left top;
-    left: 25rem;
 
     height: auto;
-
-    margin-right: 25rem;
+    width: 99%; /*99% = no scrollbar ?*/
+    
+    padding-left: max(25rem,15%);
+    padding-right: max(25rem,15%);
     
     position: absolute;
     transition: transform 0.3s ease, margin 0.3s linear; /* Add smooth transition for zooming and screen size */
+    box-sizing: border-box;
 }
 
 #document-doc {
@@ -109,7 +111,7 @@ html {
 }
 @media screen and (max-width:1600px) {
     #zoom-container {
-        margin-right: 5%;
+        padding-right: 5%;
     }
 }
 
