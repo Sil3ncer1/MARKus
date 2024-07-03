@@ -28,7 +28,7 @@ Based on the Idea of a Single Page Editor from [MarkTwo](https://github.com/anth
 * * *
 
 ## Security Warning
-Important: The HTML in this Markdown document doesn't get sanitized. Because of this, you need to be careful when including HTML to avoid potential security risks.
+Important: The HTML in this Markdown editor doesn't get sanitized. Because of this, you need to be careful when including HTML to avoid potential security risks.
 
 * * *
 
