@@ -27,6 +27,11 @@ Based on the Idea of a Single Page Editor from [MarkTwo](https://github.com/anth
 
 * * *
 
+## Security Warning
+Important: The HTML in this Markdown document doesn't get sanitized. Because of this, you need to be careful when including HTML to avoid potential security risks.
+
+* * *
+
 ## Still To-Do
 
 *   Database + Profiles for Cloud Storage e.g Files and Pictures
