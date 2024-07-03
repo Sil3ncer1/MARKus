@@ -73,12 +73,14 @@
     background-color: #dcdcdc;
     padding: 1rem;
     border-left: var(--border-size) solid black;
+    white-space: pre-wrap;
 }
 
 #page-container blockquote {
     border-left: var(--border-size) solid black;
     margin-left: 5rem;
     padding-left: 2rem;
+    white-space: pre-wrap;
 }
 
 #page-container blockquote p {

@@ -19,7 +19,8 @@
     <link rel="stylesheet" type="text/css" href="css/contextmenu.css">
     <link rel="stylesheet" type="text/css" href="css/popup.css">
     <link rel="stylesheet" type="text/css" href="css/settings.css">
-    
+    <link rel="stylesheet" type="text/css" href="css/directory.css">
+
     <link rel="stylesheet" type="text/css" href="css/code.css">
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -136,7 +137,7 @@
             </table>
         </div>
     </div>
-    
+
     <div id="sidebar-dropdown" style="display: none;">
         <ul>
             <li id="sidebar-new" title="New"><img src="imgs/icons/file-line.svg" alt="">New</li>
@@ -584,13 +585,51 @@
         <input id="empty-document-add-line-input" type="text" style="opacity: 0;">
     </div>
 
-    <div id="zoom-container">
-        <div id="document-doc" style="font-size: 16px;"></div> 
-        <div id="page-container" style="display: none;"></div>
-        <div id="slideshow-container" style="display: none;">
-            <a id="slide-prev" style="display: none;" onclick="plusSlides(-1)">&#10094;</a>
-            <div id="slide-container"></div>
-            <a id="slide-next" style="display: none;" onclick="plusSlides(1)">&#10095;</a>
+    <div id="directory-editor-layout">
+        <div id="directory-button-hitbox">
+            <div id="directory">
+                <ul id="directory-container"> Your Workstation
+                    <hr>
+                    <li class="directory-folder">
+                        <details open>
+                          <summary>Folder 1</summary>
+                          <ul>
+                            <li class="directory-folder">
+                              <details>
+                                <summary>Folder 2</summary>
+                                <ul>
+                                  <li class="directory-files">MD File 1</li>
+                                  <li class="directory-files">MD File 1</li>
+                                </ul>
+                              </details>
+                            </li>
+                            <li class="directory-folder">
+                              <details>
+                                <summary>Folder 3</summary>
+                                <ul>
+                                  <li class="directory-files">JPG File 1</li>
+                                  <li class="directory-files">PNG File 23456789/li>
+                                </ul>
+                              </details>
+                            </li>
+                          </ul>
+                        </details>
+                      </li>
+                      <li class="directory-files">Neptune</li>
+                </ul>
+            </div>
+            <div id="directory-button">
+                <img src="imgs/icons/expand-left-right-fill.svg" alt="">
+            </div>
+        </div>
+        <div id="zoom-container">
+            <div id="document-doc" style="font-size: 16px;"></div> 
+            <div id="page-container" style="display: none;"></div>
+            <div id="slideshow-container" style="display: none;">
+                <a id="slide-prev" style="display: none;" onclick="plusSlides(-1)">&#10094;</a>
+                <div id="slide-container"></div>
+                <a id="slide-next" style="display: none;" onclick="plusSlides(1)">&#10095;</a>
+            </div>
         </div>
     </div>
 
@@ -619,6 +658,7 @@
     <script src="js/document.js"></script>
 
     <script src="js/sidebar.js"></script>
+    <script src="js/directory.js"></script>
     <script src="js/settings.js"></script>
 </body>
 </html>

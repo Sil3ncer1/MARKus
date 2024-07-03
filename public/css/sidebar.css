@@ -17,7 +17,9 @@
 
 
 }
-
+#sidebar::-webkit-scrollbar {
+  display: none;
+}
 
 #table-picker{
     padding: 0.5rem;
@@ -137,7 +139,7 @@ background:var(--navBackground);
 #sidebar-dropdown img {
     width: 1.5rem;
     margin-right: 0.5rem; 
-    filter: var(--iconFilter)
+    filter: var(--iconFilter);
 }
 
 
@@ -189,36 +191,3 @@ background:var(--navBackground);
     display: block;
 }
 
-@media screen and (max-width:1063px) {
-    #sidebar {
-        position: fixed;
-    
-        left: 0;
-        top: 0;
-    
-        width: 5rem;
-        height: 100%;
-    
-        background-color: var(--navBackground);
-        box-shadow: 4px -4px rgba(0, 0, 0, 0.25);
-    
-        z-index: 16;
-    
-        overflow-x: hidden;
-        overflow-y: auto;
-       
-    }
-    
-
-    #sidebar li {
-        margin: 0.3rem auto;
-        width: 4.5em;
-        height: 4.5em;
-        border-radius: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: 200ms ease-in-out;
-        cursor: pointer;
-    } 
-}

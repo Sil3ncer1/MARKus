@@ -87,34 +87,31 @@ html {
     transition: 500ms ease-in-out;
 }
 
+#directory-editor-layout{
+    width: 100%;
+}
 
 #zoom-container {
     transform-origin: left top;
-    width: 90%;
+
     height: auto;
-    margin-left: 5%;
-    margin-right: 5%;
+    width: 99%; /*99% = no scrollbar ?*/
+    
+    padding-left: max(25rem,15%);
+    padding-right: max(25rem,15%);
     
     position: absolute;
-    transition: transform 0.3s ease; /* Add smooth transition for zooming */
+    transition: transform 0.3s ease, margin 0.3s linear; /* Add smooth transition for zooming and screen size */
+    box-sizing: border-box;
 }
 
 #document-doc {
     position: relative;
     overflow: auto;
-
-
 }
-@media screen and (max-width:1063px) {
+@media screen and (max-width:1600px) {
     #zoom-container {
-        transform-origin: left top;
-        width: 80%;
-        height: auto;
-        margin-left: 10%;
-        margin-right: 10%;
-        
-        position: absolute;
-        transition: transform 0.3s ease; /* Add smooth transition for zooming */
+        padding-right: 5%;
     }
 }
 

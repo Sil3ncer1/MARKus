@@ -1,0 +1,125 @@
+
+#directory-button-hitbox{
+    --directoryHitboxSize: 25rem;
+
+    position: fixed;
+    left: 0%;
+    top: 0;
+
+    width: var(--directoryHitboxSize);
+    height: 100%;
+
+    opacity: 1;
+    z-index: 15;
+
+}
+
+
+#directory {
+    --directorySizeOpen: 20rem;
+    --directorySizeClose: 0rem;
+
+    position: fixed;
+    left: 2.5rem;
+    top: 0;
+    box-sizing: border-box;
+
+    width: var(--directorySizeClose);
+    height: 100%;
+
+    background-color: var(--navBackground);
+    box-shadow: 4px -4px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+
+    transition: 200ms ease-in-out;
+
+    z-index: 15;
+}
+
+
+#directory-button{
+    --directorySizeOpen: 22.5rem;
+
+    cursor: pointer;
+    position: fixed;
+    left: 2.5rem;
+    top: 0;
+
+    display: flex;
+    align-items: center;
+
+    width: 0%;
+    height: 10%;
+
+    background-color: var(--navBackground);
+    box-shadow: 4px -4px rgba(0, 0, 0, 0.25);
+
+    border-radius: 0 10px 10px 0;
+
+    transition: width 250ms, left 200ms ease-in-out;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 15;
+
+}
+
+#directory-button img{
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 70%;
+
+    align-self: center;
+
+    filter: var(--iconFilter);
+}
+
+#directory-container{
+    padding-right: 1rem;
+    padding-top: 5%;
+    padding-left: 1rem;
+    z-index: 15;
+}
+
+#directory-container ul{
+    padding-left: 1rem;
+}
+
+
+.directory-folder {
+    cursor: pointer;
+
+    display: list-item;
+    width: auto;
+    list-style-position: inside;
+    list-style: none;
+
+    padding-left: 0.5rem;
+
+    font-size: 17px;
+
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
+
+.directory-files {
+    cursor: pointer;
+
+    list-style-position: inside;
+    list-style-type: circle;
+
+    padding-left: 0.5rem;
+
+    font-size: 17px;
+
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
+
+
+.directory-files:hover, #directory summary:hover{
+    background-color: var(--menuHighlight);
+}
+
