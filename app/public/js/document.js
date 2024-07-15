@@ -438,7 +438,6 @@ function addEventListenersToTextArea(textarea) {
   textarea.addEventListener("focusout", async () => {
     const markdownText = textarea.value.trim();
     const mainDocument = document.getElementById('document-doc');
-
     
     if (markdownText === "") {
       textcontainer.remove();
@@ -490,6 +489,28 @@ function addEventListenersToTextArea(textarea) {
       if (!document.hasChildNodes()) showEmptyLineContainer();
 
       // if (selectedViewMode == 1) checkIfPagesAreFull();
+
+
+      // Socket.io
+      const doc = document.getElementById('document-doc');
+
+      let clonedDoc = doc.cloneNode(true);
+
+      clonedDoc.querySelectorAll('*').forEach(element => {
+        let elementToCheck = findClosestEditableElement(element);
+        console.log(elementToCheck);
+
+        if (!elementToCheck) {
+          element.remove();
+        }
+      });
+
+
+      let docContent = clonedDoc.innerHTML;
+
+      console.log(docContent);
+
+      socket.emit('document-changed', docContent); 
 
     } catch (error) {
       console.error(error);
