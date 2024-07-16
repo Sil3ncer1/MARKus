@@ -45,6 +45,9 @@ const settingsCloseBtn = document.getElementById('settings-close');
 
 const newFormattingBtn = document.getElementById('sidebar-newFormatting').parentNode; 
 
+// Info List
+const settingsHelp = document.getElementById('info-list-help').parentNode; 
+
 // Popup
 const popup = document.getElementById('popup');
 
@@ -485,6 +488,7 @@ settingsBtn.addEventListener('click', toggleSettingsMenu);
 settingsCloseBtn.addEventListener('click', toggleSettingsMenu);
 menuSettingsBtn.addEventListener('click', toggleSettingsMenu);
 
+
 /**
  * Show the settings menu
  * @return {void} 
@@ -541,6 +545,17 @@ newFormattingBtn.addEventListener('click', () => {
     document.getElementById('settings-category-snippets').classList.add('settings-active-category');
 });
 
+
+// Help
+settingsHelp.addEventListener('click', () => {
+    toggleSettingsMenu();
+    tabs.forEach(tab => tab.classList.remove('settings-active-category'));
+    contentDivs.forEach(div => div.classList.remove('settings-active'));
+
+
+    document.getElementById('settings-help').classList.add('settings-active');
+    document.getElementById('settings-category-help').classList.add('settings-active-category');
+});
 
 
 // Stay focus on a text if you click something in the sidebar

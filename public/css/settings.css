@@ -338,6 +338,14 @@
     color: var(--menuTextColor);
 }
 
+.settings-group li code {
+    color: var(--textColor);
+    background-color: var(--secondaryColor) ; 
+    border-radius: 3px; 
+    border: 1px solid #ccc; 
+    padding: 0.0em 0.4em;
+    margin: -1px;
+}
 
 .settings-group li button {
     width: 25%;
