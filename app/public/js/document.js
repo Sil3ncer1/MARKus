@@ -447,6 +447,7 @@ function addEventListenersToTextArea(textarea) {
       fileChangedTime.innerHTML = date;
       stateManager.pushState(mainDocument.innerHTML);
       if (!mainDocument.hasChildNodes()) showEmptyLineContainer();
+      if(socket) documentChanged();
       return;
     }
 
@@ -491,26 +492,8 @@ function addEventListenersToTextArea(textarea) {
       // if (selectedViewMode == 1) checkIfPagesAreFull();
 
 
-      // Socket.io
-      const doc = document.getElementById('document-doc');
-
-      let clonedDoc = doc.cloneNode(true);
-
-      clonedDoc.querySelectorAll('*').forEach(element => {
-        let elementToCheck = findClosestEditableElement(element);
-        console.log(elementToCheck);
-
-        if (!elementToCheck) {
-          element.remove();
-        }
-      });
-
-
-      let docContent = clonedDoc.innerHTML;
-
-      console.log(docContent);
-
-      socket.emit('document-changed', docContent); 
+      // Websockets
+      if(socket) documentChanged();
 
     } catch (error) {
       console.error(error);

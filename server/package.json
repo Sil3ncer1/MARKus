@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "nanoid": "^5.0.7",
     "socket.io": "^4.7.5",
     "ws": "^7.4.1"
   }

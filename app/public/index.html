@@ -20,6 +20,7 @@
     <link rel="stylesheet" type="text/css" href="css/popup.css">
     <link rel="stylesheet" type="text/css" href="css/settings.css">
     <link rel="stylesheet" type="text/css" href="css/directory.css">
+    <link rel="stylesheet" type="text/css" href="css/collabmenu.css">
 
     <link rel="stylesheet" type="text/css" href="css/code.css">
 
@@ -647,10 +648,23 @@
             <li class="footer-button" id="footer-selected"><img id="footer-infinite-view" src="imgs/icons/file-paper-line.svg" alt=""></li>
             <li class="footer-button"><img id="footer-document-view" src="imgs/icons/article-line.svg" alt=""></li>
             <li class="footer-button"><img id="footer-slide-view" src="imgs/icons/slideshow-3-line.svg" alt=""></li>
-             
+            
             <li><input type="range" id="zoom-slider" min="10" max="200" step="10" value="100"></li>
             <li><div id="zoom-value">100%</div></li>
+
+            <li class="footer-button"><img id="footer-collab-button" src="imgs/icons/slideshow-3-line.svg" alt=""></li>
         </ul>
+    </div>
+
+    <div id="collab-modal" style="display: block;">
+        <h3>Collab with others</h3>
+        <button id="collab-open-room-btn" style="display: block;">Open Room</button>
+        <button id="collab-close-room-btn" style="display: none;">Close Room</button>
+        <div id="collab-room-id" style="display: none;">123-456</div>
+        <button id="collab-join-room-btn">Join Room</button>
+        <input id="collab-invite-code" type="text" placeholder="Room ID: Ay3-C61">
+
+        <h3>User:</h3>
     </div>
 
     <script src="js/documentStatemanager.js"></script>
@@ -658,7 +672,7 @@
 
 
     <!-- Socket.io -->
-    <script src="https://cdn.socket.io/socket.io-3.0.0.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script defer src="js/connection.js"></script>
 
     <script src="js/document.js"></script>
