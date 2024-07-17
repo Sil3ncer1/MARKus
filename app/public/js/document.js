@@ -288,15 +288,20 @@ async function setContextMenu(event) {
 } 
 
 
+let ElementID = 0;
+
 /**
  * Creates an HTML element from an HTML string
  * @param {string} htmlString
  * @param {string} className
  * @return {HTMLDivElement} 
  */
-function createHTMLElement(htmlString, className) {
+function createHTMLElement(htmlString, className, id = -1) {
   const element = document.createElement('div');
   element.innerHTML = htmlString;
+
+  if (id != -1) element.dataset.id = id;
+  else element.dataset.id = ElementID++;
 
   const dragHandel = document.createElement('div');
   dragHandel.classList.add('document-drag-handel')
@@ -399,6 +404,8 @@ async function replaceElementWithTextarea(clickedElement, atBeginning = false) {
 
   const htmlElement = clickedElement.firstElementChild;
 
+  const elementID = clickedElement.dataset.id;
+
   try {
     const fontStyle = window.getComputedStyle(htmlElement).font;
 
@@ -408,7 +415,7 @@ async function replaceElementWithTextarea(clickedElement, atBeginning = false) {
     clickedElement.replaceWith(textcontainer);
     
     const textarea = textcontainer.firstElementChild;
-    addEventListenersToTextArea(textarea);
+    addEventListenersToTextArea(textarea, elementID);
     textarea.focus();
 
     if (atBeginning) textarea.selectionEnd = 0;
@@ -430,7 +437,7 @@ async function replaceElementWithTextarea(clickedElement, atBeginning = false) {
  * @param {HTMLTextAreaElement} textarea
  * @return {void} 
  */
-function addEventListenersToTextArea(textarea) {
+function addEventListenersToTextArea(textarea, id = -1) {
   const textcontainer = textarea.parentNode;
 
   const parentContainer = textcontainer.parentNode;
@@ -441,19 +448,25 @@ function addEventListenersToTextArea(textarea) {
     
     if (markdownText === "") {
       textcontainer.remove();
+      
       let today = new Date();
       let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' '+ today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       const fileChangedTime  = document.getElementById('settings-info-file-changed-value');
+      
       fileChangedTime.innerHTML = date;
       stateManager.pushState(mainDocument.innerHTML);
+      
       if (!mainDocument.hasChildNodes()) showEmptyLineContainer();
+      
       if(socket) documentChanged();
+     
       return;
     }
 
     try {
 
       const html = await convertMarkdownToHTML(markdownText);
+      
       //const parsedHTML = new DOMParser().parseFromString(html, 'text/html'); next two lines fix for movin styles tag etc to head
       var htmlObjects = document.createElement('div');
       htmlObjects.innerHTML = html;
@@ -462,7 +475,7 @@ function addEventListenersToTextArea(textarea) {
       const nextSibling = textcontainer.nextElementSibling;
 
       for (const child of children) {
-        const newTag = createHTMLElement(child.outerHTML, "document-editable");
+        const newTag = createHTMLElement(child.outerHTML, "document-editable", id);
         parentContainer.insertBefore(newTag, nextSibling);
       }
 
@@ -775,7 +788,8 @@ function makeAllElementsEditable() {
 
     const container = document.createElement('div');
     container.classList.add('document-editable');
-  
+    container.dataset.id = ElementID++;
+
     element.replaceWith(container);
     container.appendChild(element);
 
@@ -905,11 +919,14 @@ function loadExample() {
       let metadata = document.getElementById('settings-meta');
       let allElements = document.querySelectorAll('.document-editable');
       const fileCreateTime  = document.getElementById('settings-info-file-created-value');
+
       for (let child of allElements) {
         child.remove();
       }
+
       addNewTextarea(null, true);
-      let newTextfield = document.getElementById('document-textarea'); 
+
+      let newTextfield = document.getElementById('document-textarea');
       let match = client.responseText.match(/^(?:\-\-\-)(.*?)(?:\-\-\-|\.\.\.)/s);
       metadata.value = match ? match[0] : null;
 
