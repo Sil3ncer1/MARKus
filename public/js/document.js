@@ -93,34 +93,24 @@ function generateStringFromRegex(regex){
   return regexString;
 }
 
-// TO-DO Think about 3 inputs or 5 (some problems in the conversion still occur e.g. special regex rules like \W )
-// customPlugins.push(importantPlugin1);
-
-const importantPlugin1 = new MarkdownPlugin(
-  "blue",
-  String.raw`\^(\d{2})`,
-  `<sub style="color: var(--accentColor)">$1</sub>`,
-  String.raw`<sub style="color: var\(--accentColor\)">(.*)<\/sub>`, 
-  "^$1"
-);
 
 customPlugins.push(createPlugin(
   "sub", 
-  null,
+  'imgs/icons/subscript.svg',
   String.raw`\^\$1`, 
   `<strong><sub style="color: var(--codeVariable)">$1</sub></strong>`
   ));
 
 customPlugins.push(createPlugin(
   "spoiler",
-  null,
+  'imgs/icons/error-warning-line.svg',
   String.raw`\?\?\$1\?\?`, 
   `<span style="color: rgb(0, 0, 0); background: black; display: inline-block; border-radius: 3px; padding: 2px;" onMouseOver="this.style.color='#FFF'" onMouseOut="this.style.color='#000'">$1</span>`
 ));
 
 customPlugins.push(createPlugin(
   "customImage",
-  null,
+  'imgs/icons/image-edit-line.svg',
   String.raw`\!\[\$1\]\(\$2\)\{\$3\,\$4\}`,   
   `<div class="ImageContainer" style="position: relative">
     <img alt="$1" src="$2" style="width: $3px; height: $4px; transition: all 200ms ease 0s;" id="$1">
@@ -268,12 +258,17 @@ document.getElementById('zoom-container').addEventListener('contextmenu', async 
 async function setContextMenu(event) {
   let clickedElement = event.target
   clickedElement = findClosestEditableElement(clickedElement);
-
   removeSelection();
+  
+  if(clickedElement == null
+    || event.target.classList.contains('document-drag-handel')
+    || event.target.id == 'document-textarea'){
+      
+      return
+    }
 
 
-
-  if(clickedElement != null &&!clickedElement.classList.contains('document-editable-selected')  && !event.target.classList.contains('document-drag-handel')){
+  if(!clickedElement.classList.contains('document-editable-selected')){
     clickedElement.classList.add('document-editable-selected')
     let contextMenu = document.getElementById('custom-context-menu');
     contextMenu.style.left = event.pageX + 'px';
@@ -417,6 +412,7 @@ async function replaceElementWithTextarea(clickedElement, atBeginning = false) {
     if (fontStyle && htmlElement.tagName != "TABLE") textarea.style.font = fontStyle;
     if (htmlElement.tagName == "TABLE") textarea.value = formatTableMarkdown(textarea.value);
     textarea.style.height = textarea.scrollHeight + "px";
+
 
 
   } catch (error) {

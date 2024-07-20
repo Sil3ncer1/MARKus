@@ -183,6 +183,10 @@ html {
     body {
         visibility: hidden;
     }
+    
+    #directory-button-hitbox{
+        display: none;
+    }
 
     .document-editable{
         visibility: visible;
@@ -201,6 +205,11 @@ html {
         font-family: sans-serif;
         min-width: 400px;
 
+    }
+
+    #zoom-container {
+        padding-left: 15%;
+        padding-right: 15%;
     }
 
 }

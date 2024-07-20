@@ -84,3 +84,13 @@
 .footer-button:hover{
     background-color: var(--navHighlight);
 }
+
+#zoom-value{
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    transition: 0.3s ease;
+}
+
+#zoom-value:hover{
+    background-color: var(--navHighlight);
+}
