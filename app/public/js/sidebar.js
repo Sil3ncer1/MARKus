@@ -259,6 +259,7 @@ function downloadFile(htmlString, fileType, fileName) {
 function updateDocContent(content) {
     let doc = document.getElementById('document-doc');
     doc.innerHTML = content;
+    
 }
 
 undoBtn.addEventListener('click', event => {

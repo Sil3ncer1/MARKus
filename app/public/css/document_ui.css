@@ -35,6 +35,7 @@
 
 .document-editable-selected {
     border: 3px var(--accentColor) dashed;
+    box-sizing: border-box;
     border-radius: .8rem;
     margin: -3px;
 }
@@ -228,4 +229,15 @@
     font-size: 3rem;
     font-weight: 800;
     cursor: pointer;
+}
+
+
+
+.document-element-blocked {
+    border: 3px crimson dashed;
+    box-sizing: border-box;
+    border-radius: .8rem;
+    margin: -3px;
+    opacity: 50%;
+    cursor: not-allowed;
 }

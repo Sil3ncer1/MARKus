@@ -241,6 +241,7 @@ window.addEventListener('unload', (event) => {
   autoSaveDocument();
 });
 
+
 // Event listener for clicking on an element of the document
 document.addEventListener('click', async (event) => {
   if(event.target.type =='checkbox') return;
@@ -402,9 +403,18 @@ async function replaceElementWithTextarea(clickedElement, atBeginning = false) {
   
   if (!clickedElement) return;
 
+  if (clickedElement.classList.contains('document-element-blocked')) {
+    showPopup('this element is currentll edited by another user');
+    return;
+  }
+
+
   const htmlElement = clickedElement.firstElementChild;
 
   const elementID = clickedElement.dataset.id;
+
+  if (socket) blockEditedElement(elementID);
+
 
   try {
     const fontStyle = window.getComputedStyle(htmlElement).font;
@@ -445,7 +455,7 @@ function addEventListenersToTextArea(textarea, id = -1) {
   textarea.addEventListener("focusout", async () => {
     const markdownText = textarea.value.trim();
     const mainDocument = document.getElementById('document-doc');
-    
+
     if (markdownText === "") {
       textcontainer.remove();
       
@@ -458,7 +468,8 @@ function addEventListenersToTextArea(textarea, id = -1) {
       
       if (!mainDocument.hasChildNodes()) showEmptyLineContainer();
       
-      if(socket) documentChanged();
+      console.log("remove");
+      if(socket) removeElement(id);
      
       return;
     }
@@ -506,7 +517,7 @@ function addEventListenersToTextArea(textarea, id = -1) {
 
 
       // Websockets
-      if(socket) documentChanged();
+      if(socket) documentChanged(id);
 
     } catch (error) {
       console.error(error);
