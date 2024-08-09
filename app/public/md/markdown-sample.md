@@ -1,15 +1,16 @@
 ---
 layout: test Layout
-title: test Titel
+title: test Title
 ---
 
-![fh-logo](https://www.fh-dortmund.de/openGraph-200x200.png){100,100}
+![markdown-logo](https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Markdown-mark.svg/1920px-Markdown-mark.svg.png){104,64}
 
-# Guten Morgen
-## Guten Morgen in kleiner
+# Title 1
+## Title 2
+
 * * *
 ### Plain Text:
-**Lorem** *ipsum* `dolor sit amet`, ~~consectetur~~ [Github](https://github.com/YukkiTimmy/projektarbeit-markdown) ??Esse??.  H^2O laboriosam earum, neque, illo ducimus at ipsam, dolor consequatur maiores harum inventore molestias repudiandae eius veritatis necessitatibus exercitationem temporibus reprehenderit?
+**Lorem** *ipsum* `dolor sit amet`, ~~consectetur~~ [Github](https://github.com/Sil3ncer1/MARKus) ??Esse??.  H^2O laboriosam earum, neque, illo ducimus at ipsam, dolor consequatur maiores harum inventore molestias repudiandae eius veritatis necessitatibus exercitationem temporibus reprehenderit?
 ### Code Block:
 ```
 function heapSort(arr) {

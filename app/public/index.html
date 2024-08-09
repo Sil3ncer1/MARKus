@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <title>MARKus - Markdown to HTML Converter</title>
+    <title>MARKus - Single-Page Editor</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cousine:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -21,6 +21,7 @@
     <link rel="stylesheet" type="text/css" href="css/settings.css">
     <link rel="stylesheet" type="text/css" href="css/directory.css">
     <link rel="stylesheet" type="text/css" href="css/collabmenu.css">
+    <link rel="stylesheet" type="text/css" href="css/info.css">
 
     <link rel="stylesheet" type="text/css" href="css/code.css">
 
@@ -163,7 +164,18 @@
 
         </ul>
     </div>
-    
+
+    <ul id="info-list">
+        <li title="Help">
+            <img id="info-list-help" class="info-list-item" src="imgs/icons/question-line.svg" alt="">
+        </li>
+        <li title="GitHub">
+            <a href="https://github.com/Sil3ncer1/MARKus">
+                <img class="info-list-item" src="imgs/icons/github-fill.svg" alt="">
+            </a>
+        </li>
+    </ul>
+
     <div id="custom-context-menu" style="display: none;">
         <ul>
             
@@ -543,11 +555,12 @@
                     <ul class="settings-options">
                         <h2>Styling</h2>
                         <div class="settings-group">
-                            <li>"**bold**" - <strong>bold</strong></li>
-                            <li>"__ also bold__" - <strong>bold</strong></li>
-                            <li>"*italic*" - <em>italic</em></li>
+                            <li>"**bold**" -&nbsp; <strong>bold</strong></li>
+                            <li>"__ also bold__" -&nbsp; <strong>bold</strong></li>
+                            <li>"*italic*" -&nbsp; <em>italic</em></li>
                             <li>"_also italic_" - also italic</li>
-                            <li>"~strikethrough~" - <s>strikethrough</s></li>
+                            <li>"~strikethrough~" -&nbsp; <s>strikethrough</s></li>
+                            <li>"`inline-code`" -&nbsp; <code>inline-code</code></li>
                         </div>
 
                         <h2>Heading</h2>
@@ -560,6 +573,84 @@
                             <li>"#####" - Heading level 5</li>
                             <li>"######" - Heading level 6</li>
                         </div>
+
+                        <h2>Horizontal line</h2>
+
+                        <div class="settings-group">
+                            <li>
+                                --- three dashes for a line
+                            </li>
+                        </div>
+
+                        <h2>Unorderd list</h2>
+
+                        <div class="settings-group">
+                            <li>
+                                *   A asterisk followed by a space<br>
+                                &emsp; *   Four Spaces / Tab for indentation <br>
+                            </li>
+                        </div>
+
+                        <h2>Ordered list</h2>
+
+                        <div class="settings-group">
+                            <li>
+                                1.   A number + dot followed by a space<br>
+                                &emsp; 2.  Four Spaces / Tab for indentation <br>
+                            </li>
+                        </div>
+
+                        <h2>Check list</h2>
+
+                        <div class="settings-group">
+                            <li>
+                                * [ ] A asterisk + 2 brackets with a space inbetween followed by a space<br>
+                                &emsp; * [ ]  Four Spaces / Tab for indentation <br>
+                            </li>
+                        </div>
+
+                        <h2>Blockquote</h2>
+
+                        <div class="settings-group">
+                            <li>
+                                >  Greater-than sign in the beginning of an block followed by a space
+                            </li>
+                        </div>
+
+                        <h2>Codeblock</h2>
+
+                        <div class="settings-group">
+                            <li>
+                                ```  <br> Three Gravis + linebreak in the beginning and the end <br>``` 
+                            </li>
+                        </div>
+
+                        <h2>Tables</h2>
+
+                        <div class="settings-group">
+                            <li>
+                                | Table | Collum |<br>
+                                | --- &nbsp; | --- &nbsp; &nbsp;|<br>
+                                | Row &nbsp; |&nbsp; &nbsp; &nbsp; &nbsp; |<br> 
+                            </li>
+                        </div>
+
+                        <h2>Images</h2>
+
+                        <div class="settings-group">
+                            <li>
+                                ![Alt text](/path/to/img.jpg "Optional title")
+                            </li>
+                        </div>
+
+                        <h2>Links</h2>
+
+                        <div class="settings-group">
+                            <li>
+                                [This link](http://example.net/)
+                            </li>
+                        </div>
+
                     </ul>
                 </div>
             </div>
@@ -589,7 +680,8 @@
     <div id="directory-editor-layout">
         <div id="directory-button-hitbox">
             <div id="directory">
-                <ul id="directory-container"> Your Workstation
+                <ul id="directory-container"> 
+                    <p>Your Workstation</p>
                     <hr>
                     <li class="directory-folder">
                         <details open>
@@ -600,7 +692,7 @@
                                 <summary>Folder 2</summary>
                                 <ul>
                                   <li class="directory-files">MD File 1</li>
-                                  <li class="directory-files">MD File 1</li>
+                                  <li class="directory-files">MD File 2</li>
                                 </ul>
                               </details>
                             </li>
@@ -616,7 +708,7 @@
                           </ul>
                         </details>
                       </li>
-                      <li class="directory-files">Neptune</li>
+                      <li class="directory-files">MD File 3</li>
                 </ul>
             </div>
             <div id="directory-button">

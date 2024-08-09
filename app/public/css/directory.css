@@ -76,9 +76,15 @@
 
 #directory-container{
     padding-right: 1rem;
-    padding-top: 5%;
+    padding-top: 1rem;
     padding-left: 1rem;
     z-index: 15;
+}
+
+#directory-container p{
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
 }
 
 #directory-container ul{

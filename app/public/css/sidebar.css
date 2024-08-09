@@ -70,7 +70,7 @@ background:var(--navBackground);
     border: none;
 
     margin: .75rem auto;
-    filter: var(--iconFilter)
+    filter: var(--iconFilter);
 }
 
 #sidebar li:hover {

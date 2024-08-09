@@ -101,7 +101,7 @@ html {
     padding-right: max(25rem,15%);
     
     position: absolute;
-    transition: transform 0.3s ease, margin 0.3s linear; /* Add smooth transition for zooming and screen size */
+    transition: transform 0.3s ease, margin 0.3s linear, padding 0.3s linear; /* Add smooth transition for zooming and screen size */
     box-sizing: border-box;
 }
 
@@ -183,6 +183,10 @@ html {
     body {
         visibility: hidden;
     }
+    
+    #directory-button-hitbox{
+        display: none;
+    }
 
     .document-editable{
         visibility: visible;
@@ -201,6 +205,11 @@ html {
         font-family: sans-serif;
         min-width: 400px;
 
+    }
+
+    #zoom-container {
+        padding-left: 15%;
+        padding-right: 15%;
     }
 
 }
