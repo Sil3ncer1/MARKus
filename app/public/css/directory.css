@@ -1,6 +1,7 @@
 
 #directory-button-hitbox{
     --directoryHitboxSize: 25rem;
+    --directoryHitboxSizeClose:25rem;
 
     position: fixed;
     left: 0%;
@@ -129,3 +130,9 @@
     background-color: var(--menuHighlight);
 }
 
+@media screen and (max-width:1000px) {
+    #directory-button-hitbox {
+        --directoryHitboxSize: 25rem;
+        --directoryHitboxSizeClose:5rem;
+    }
+}

@@ -19,8 +19,10 @@ directoryBtn.addEventListener("click", (event) => {
     if(directory.style.width == "var(--directorySizeOpen)"){
         directory.style.width = "var(--directorySizeClose)";
         directoryBtn.style.left = "2.5em";
+        directoryHitboxBtn.style.width = "var(--directoryHitboxSizeClose)";
     }else{
         directory.style.width = "var(--directorySizeOpen)";
         directoryBtn.style.left = "var(--directorySizeOpen)";
+        directoryHitboxBtn.style.width = "var(--directoryHitboxSize)";
     }
 });

@@ -109,9 +109,16 @@ html {
     position: relative;
     overflow: auto;
 }
+
 @media screen and (max-width:1600px) {
     #zoom-container {
         padding-right: 5%;
+    }
+}
+
+@media screen and (max-width:1000px) {
+    #zoom-container {
+        padding-left: 5%;
     }
 }
 
