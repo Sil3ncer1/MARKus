@@ -998,6 +998,7 @@ function addEventListenersToContextMenu() {
     let clickedElement = documentElement.querySelector('.document-editable-selected');
     if (!clickedElement) return;
     clickedElement.firstChild.removeAttribute('style');
+    if(socket) documentChanged(clickedElement.dataset.id);
   });
 
   let alignCenterBtn = document.getElementById('contextMenu-alignCenter');
@@ -1006,6 +1007,7 @@ function addEventListenersToContextMenu() {
     let clickedElement = documentElement.querySelector('.document-editable-selected');
     if (!clickedElement) return;
     clickedElement.firstChild.style.textAlign = 'center';
+    if(socket) documentChanged(clickedElement.dataset.id);
   });
 
   let alignRightBtn = document.getElementById('contextMenu-alignRight');
@@ -1014,6 +1016,7 @@ function addEventListenersToContextMenu() {
     let clickedElement = documentElement.querySelector('.document-editable-selected');
     if (!clickedElement) return;
     clickedElement.firstChild.style.textAlign = 'right';
+    if(socket) documentChanged(clickedElement.dataset.id);
   });
 
   let alignJustifyBtn = document.getElementById('contextMenu-alignJustify');
@@ -1022,6 +1025,7 @@ function addEventListenersToContextMenu() {
     let clickedElement = documentElement.querySelector('.document-editable-selected');
     if (!clickedElement) return;
     clickedElement.firstChild.style.textAlign = 'justify';
+    if(socket) documentChanged(clickedElement.dataset.id);
   });
 
 

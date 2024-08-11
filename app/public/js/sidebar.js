@@ -113,8 +113,10 @@ newBtn.addEventListener('click', event => {
     filename.value = '';
     metadata.value = '';
 
-    while (doc.firstChild)
+    while (doc.firstChild){
+        if(socket) removeElement(doc.firstChild.dataset.id);
         doc.firstChild.remove();
+    }
 
     showEmptyLineContainer();
 

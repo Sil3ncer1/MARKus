@@ -51,6 +51,7 @@ collabOpenRoomBtn.addEventListener('click', e => {
         const removedElement = document.querySelector('[data-id="' + elementID + '"]');
 
         if (removedElement) removedElement.remove();
+        if (!doc.hasChildNodes()) showEmptyLineContainer();
     });
 
     socket.on('editing-element', elementID => {
@@ -109,8 +110,10 @@ collabJoinRoomBtn.addEventListener('click', e => {
 
         socket.on('element-removed', elementID => {
             const removedElement = document.querySelector('[data-id="' + elementID + '"]');
-
             if (removedElement) removedElement.remove();
+
+            const doc = document.getElementById('document-doc');
+            if (!doc.hasChildNodes()) showEmptyLineContainer();
             
         });
 

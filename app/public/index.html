@@ -677,6 +677,20 @@
         <input id="empty-document-add-line-input" type="text" style="opacity: 0;">
     </div>
 
+    <div id="collab-modal" style="display: block;">
+        <h3>Collab with others</h3>
+        <button id="collab-open-room-btn" style="display: block;">Open Room</button>
+        <button id="collab-close-room-btn" style="display: none;">Close Room</button>
+        <button id="collab-exit-room-btn" style="display: none;">Exit Room</button>
+
+        <div id="collab-room-id-text" style="display: none;" title="copy to clipboard">Room ID: <div id="collab-room-id">123456</div></div>
+        <button id="collab-join-room-btn">Join Room</button>
+        
+        <input id="collab-invite-code" type="text" placeholder="Room ID: Ay3-C61">
+
+        <h3>User:</h3>
+    </div>
+
     <div id="directory-editor-layout">
         <div id="directory-button-hitbox">
             <div id="directory">
@@ -748,19 +762,7 @@
         </ul>
     </div>
 
-    <div id="collab-modal" style="display: block;">
-        <h3>Collab with others</h3>
-        <button id="collab-open-room-btn" style="display: block;">Open Room</button>
-        <button id="collab-close-room-btn" style="display: none;">Close Room</button>
-        <button id="collab-exit-room-btn" style="display: none;">Exit Room</button>
 
-        <div id="collab-room-id-text" style="display: none;" title="copy to clipboard">Room ID: <div id="collab-room-id">123456</div></div>
-        <button id="collab-join-room-btn">Join Room</button>
-        
-        <input id="collab-invite-code" type="text" placeholder="Room ID: Ay3-C61">
-
-        <h3>User:</h3>
-    </div>
 
     <script src="js/documentStatemanager.js"></script>
     <script src="js/footer.js"></script>
