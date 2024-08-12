@@ -25,7 +25,9 @@ collabOpenRoomBtn.addEventListener('click', e => {
     socket = io('ws://localhost:8080');
 
     const doc = document.getElementById('document-doc');
-    socket.emit('create-room', doc.innerHTML);
+    const childrenArray = Array.from(doc.children).map(child => child.outerHTML);
+    console.log(childrenArray)
+    socket.emit('create-room', childrenArray);
 
     socket.on('room-created', roomID => {
         console.log(`Room created with ID: ${roomID}`);
@@ -42,9 +44,38 @@ collabOpenRoomBtn.addEventListener('click', e => {
     });
 
     socket.on('element-changed', docChanges => {
-        const changedElement = document.querySelector('[data-id="' + docChanges.id + '"]');
-        changedElement.classList.remove('document-element-blocked');
-        changedElement.innerHTML = docChanges.content;
+        console.log(docChanges)
+            const changedElement = document.querySelector('[data-id="' + docChanges.id + '"]');
+            if (changedElement) {
+                changedElement.outerHTML = docChanges.content;
+                changedElement.classList.remove('document-element-blocked');
+            }
+                else {
+                const doc = document.getElementById('document-doc');
+                const element = document.createElement('div');
+                element.innerHTML = docChanges.content;
+                console.log(element.innerHTML)
+                console.log(doc.insertBefore(element.firstChild, doc.children[docChanges.position-1]));
+            }
+            enableDragAndDrop();
+    });
+
+    socket.on('element-swapped', change => {
+        const changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
+        const changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
+        if(changedElement1 == changedElement2)
+            return;
+
+        changedElement1.classList.remove('document-element-blocked');
+        changedElement1.outerHTML = change.content2;
+
+        changedElement2.classList.remove('document-element-blocked');
+        changedElement2.outerHTML = change.content1;
+
+        
+        changedElement1.classList.remove("document-editable-hover-drop");
+        changedElement2.classList.remove("document-editable-hover-drop");
+        enableDragAndDrop();
     });
 
     socket.on('element-removed', elementID => {
@@ -90,22 +121,45 @@ collabJoinRoomBtn.addEventListener('click', e => {
             collabRoomID.innerText = currentRoomID;
             collabInviteCode.style.display = 'none';
 
-
             const doc = document.getElementById('document-doc');
             doc.innerHTML = docChanges || '';
+            enableDragAndDrop();
         });
 
         socket.on('element-changed', docChanges => {
-            const changedElement = document.querySelector('[data-id="' + docChanges.id + '"]');
+            console.log(docChanges)
+                const changedElement = document.querySelector('[data-id="' + docChanges.id + '"]');
+                if (changedElement) {
+                    changedElement.outerHTML = docChanges.content;
+                    changedElement.classList.remove('document-element-blocked');
+                }
+                    else {
+                    const doc = document.getElementById('document-doc');
+                    const element = document.createElement('div');
+                    element.innerHTML = docChanges.content;
+                    console.log(element.innerHTML)
+                    console.log(doc.insertBefore(element.firstChild, doc.children[docChanges.position-1]));
+                }
+                enableDragAndDrop();
+        });
 
-            if (changedElement) {
-                changedElement.innerHTML = docChanges.content;
-                changedElement.classList.remove('document-element-blocked');
-            }
-                else {
-                const doc = document.getElementById('document-doc');
-                console.log(doc.children[docChanges.position]);
-            }
+        
+        socket.on('element-swapped', change => {
+            const changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
+            const changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
+            if(changedElement1 == changedElement2)
+                return;
+
+            changedElement1.classList.remove('document-element-blocked');
+            changedElement1.outerHTML = change.content2;
+
+            changedElement2.classList.remove('document-element-blocked');
+            changedElement2.outerHTML = change.content1;
+
+            
+            changedElement1.classList.remove("document-editable-hover-drop");
+            changedElement2.classList.remove("document-editable-hover-drop");
+            enableDragAndDrop();
         });
 
         socket.on('element-removed', elementID => {
@@ -153,22 +207,44 @@ collabExitRoomBtn.addEventListener('click', e => {
 
 function documentChanged(elementID) {
     console.log("document Changed");
-
+    console.log(elementID);
     const changedElement = document.querySelector('[data-id="' + elementID + '"]');
 
     const position = Array.from(document.getElementById('document-doc').children).indexOf(changedElement);
-
+    console.log(position)
     const change = {
         id: elementID,
-        content: changedElement.innerHTML,
+        content: changedElement.outerHTML,
         position: position,
     };
 
     socket.emit('element-changed', currentRoomID, change);
 }
 
-function removeElement(elementID) {
-    socket.emit('element-removed', currentRoomID, elementID);
+function removeElement(elementID, position) {
+    console.log("element removed");
+    const change = {
+        id: elementID,
+        position: position,
+    };
+    socket.emit('element-removed', currentRoomID, change);
+}
+
+function switchElement(elementID1, elementID2) {
+    console.log("element switched");
+    const switchedElement1 = document.querySelector('[data-id="' + elementID1 + '"]');
+    const switchedElement2 = document.querySelector('[data-id="' + elementID2 + '"]');
+    const position1 = Array.from(document.getElementById('document-doc').children).indexOf(switchedElement1);
+    const position2 = Array.from(document.getElementById('document-doc').children).indexOf(switchedElement2);
+    const change = {
+        position1: position1,
+        position2: position2,
+        elementID1: elementID1,
+        elementID2: elementID2,
+        content1: switchedElement1.outerHTML,
+        content2: switchedElement2.outerHTML,
+    };
+    socket.emit('element-switched', currentRoomID, change);
 }
 
 

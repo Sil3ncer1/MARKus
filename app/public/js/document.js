@@ -453,6 +453,10 @@ function addEventListenersToTextArea(textarea, id = -1) {
     const mainDocument = document.getElementById('document-doc');
 
     if (markdownText === "") {
+
+      const position = Array.from(document.getElementById('document-doc').children).indexOf(textcontainer);
+      if(socket) removeElement(id, position);
+
       textcontainer.remove();
       
       let today = new Date();
@@ -465,7 +469,6 @@ function addEventListenersToTextArea(textarea, id = -1) {
       if (!mainDocument.hasChildNodes()) showEmptyLineContainer();
       
       console.log("remove");
-      if(socket) removeElement(id);
      
       return;
     }
@@ -480,10 +483,11 @@ function addEventListenersToTextArea(textarea, id = -1) {
       const children = Array.from(htmlObjects.children);
 
       const nextSibling = textcontainer.nextElementSibling;
-
       for (const child of children) {
         const newTag = createHTMLElement(child.outerHTML, "document-editable", id);
         parentContainer.insertBefore(newTag, nextSibling);
+        if(socket) documentChanged(newTag.dataset.id);
+        if(id != -1) id = ElementID++;
       }
 
       textcontainer.remove();
@@ -512,8 +516,8 @@ function addEventListenersToTextArea(textarea, id = -1) {
       // if (selectedViewMode == 1) checkIfPagesAreFull();
 
 
-      // Websockets
-      if(socket) documentChanged(id);
+      
+      
 
     } catch (error) {
       console.error(error);
@@ -764,18 +768,23 @@ function enableDragAndDrop() {
 
     element.addEventListener('drop', event => {
       // Swap the positions of the two parent elements
+      if (!draggedElement) return;
+      const parentB = draggedElement.parentNode;
       const parentA = element;
 
-      if (!draggedElement) return;
-
-      const parentB = draggedElement.parentNode;
+      parentA.classList.remove("document-editable-hover-drop");
+      parentB.classList.remove("document-editable-hover-drop");
+            
       const childA = parentA.firstElementChild;
 
-      // Swap the order of the parent elements
-      parentA.insertBefore(parentB.firstElementChild, parentA.firstElementChild);
-      parentB.insertBefore(childA, parentB.firstElementChild);
-      
-      element.classList.remove("document-editable-hover-drop");
+      if (socket)
+         switchElement(parentA.dataset.id, parentB.dataset.id);
+      else{
+        // Swap the order of the parent elements
+        parentA.insertBefore(parentB.firstElementChild, parentA.firstElementChild);
+        parentB.insertBefore(childA, parentB.firstElementChild);
+        
+    }
     });
   });
 }

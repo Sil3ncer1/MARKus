@@ -16,14 +16,12 @@ io.on('connection', (socket) => {
     socket.on('create-room', async (docContent) => {
         const nanoid = await getNanoid();
         const roomID = nanoid(6);
-
         let newRoom = {
             id: rooms.length,
             roomID: roomID,
             content: docContent,
             users: [socket.id]
         };
-
         rooms.push(newRoom);
         
         socket.join(roomID);
@@ -36,7 +34,7 @@ io.on('connection', (socket) => {
         if (room) {
             room.users.push(socket.id);
             socket.join(roomID);
-            socket.emit('room-joined', roomID, room.content);
+            socket.emit('room-joined', roomID, room.content.join(''));
             console.log(`User joined room with ID: ${roomID}`);
         } else {
             socket.emit('error', 'Room not found');
@@ -53,15 +51,26 @@ io.on('connection', (socket) => {
     socket.on('element-changed', (roomID, change) => {
         const room = rooms.find(room => room.roomID === roomID);
         if (room) {
-            room.content = change;
+            room.content[change.position] = change.content;
             io.to(roomID).emit('element-changed', change);
         }
     });
 
-    socket.on('element-removed', (roomID, elementID) => {
+    socket.on('element-removed', (roomID, change) => {
+        console.log(change)
         const room = rooms.find(room => room.roomID === roomID);
         if (room) {
-            io.to(roomID).emit('element-removed', elementID);
+            room.content.splice(change.position, 1);
+            io.to(roomID).emit('element-removed', change.id);
+        }
+    });
+
+    socket.on('element-switched', (roomID, change) => {
+        const room = rooms.find(room => room.roomID === roomID);
+        if (room) {
+            [room.content[change.position1], room.content[change.position2]] = [room.content[change.position2], room.content[change.position1]];
+            console.log(room.content)
+            io.to(roomID).emit('element-swapped', change);
         }
     });
 
