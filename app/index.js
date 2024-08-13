@@ -82,7 +82,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-const { initDatabase, User } = require('./database');
+const { initDatabase, User } = require('./database/database');
 
 // Initialisiere die Datenbank
 initDatabase().then(() => {
@@ -95,7 +95,7 @@ initDatabase().then(() => {
 // Speicher-Konfiguration für multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-      cb(null, 'uploads/'); // Verzeichnis, in dem die Dateien gespeichert werden
+      cb(null, 'database/uploads/'); // Verzeichnis, in dem die Dateien gespeichert werden
   },
   filename: function (req, file, cb) {
       cb(null, Date.now() + '-' + file.originalname); // Dateiname
