@@ -4,6 +4,10 @@ const RandExp = require('randexp');
 const markdownIt = require('markdown-it');
 const highlightJs = require('highlight.js');
 
+const axios = require('axios');
+const path = require('path');
+const multer = require('multer');
+
 const md = require('markdown-it')({
   highlight: function (str, lang) {
     if (lang && highlightJs.getLanguage(lang)) {
@@ -18,6 +22,14 @@ const md = require('markdown-it')({
 .use(require('markdown-it-highlightjs'))
 .use(require('markdown-it-task-lists'),{enabled: true});
 
+
+const app = express();
+const port = 3000;
+
+const CLIENT_ID = 'Ov23liTsBVLk8CrUWAyW';
+const CLIENT_SECRET = 'b3b25e4981bb07f870e3ab5dce363746b9267a52'; 
+
+
 const TurndownService = require('turndown');
 const turndownPluginGfm = require('turndown-plugin-gfm');
 
@@ -25,8 +37,6 @@ TurndownService.prototype.escape = function (string) {
   return string;
 } 
 
-const app = express();
-const port = 3000;
 
 const turndownService = new TurndownService({
   headingStyle: 'atx',
@@ -71,6 +81,106 @@ turndownService.addRule('keepattributes', {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
+
+// Speicher-Konfiguration für multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // Verzeichnis, in dem die Dateien gespeichert werden
+  },
+  filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname); // Dateiname
+  }
+});
+
+
+const upload = multer({ storage: storage });
+
+const { initDatabase, User } = require('./database');
+
+// Initialisiere die Datenbank
+initDatabase().then(() => {
+    console.log('Datenbank initialisiert.');
+}).catch((error) => {
+    console.error('Fehler beim Initialisieren der Datenbank:', error);
+});
+
+
+
+// Root-Route, um die index.html zu senden
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
+// Route für den Dateiupload
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (!req.file) {
+      return res.status(400).send('Keine Datei hochgeladen.');
+  }
+  console.log('Datei hochgeladen:', req.file);
+  res.send('Datei erfolgreich hochgeladen: ' + req.file.filename);
+});
+
+
+
+
+// Callback-Route für GitHub OAuth
+app.get('/auth/github/callback/', async (req, res) => {
+  const code = req.query.code;
+
+  if (!code) {
+      return res.status(400).send('Fehlender Code in der Anfrage.');
+  }
+
+  try {
+      // Tausche den Code gegen einen Access Token aus
+      const tokenResponse = await axios.post('https://github.com/login/oauth/access_token', {
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+          code: code,
+      }, {
+          headers: {
+              accept: 'application/json'
+          }
+      });
+
+      const accessToken = tokenResponse.data.access_token;
+
+      if (!accessToken) {
+          console.error('Kein Access Token erhalten:', tokenResponse.data);
+          return res.status(500).send('Fehler beim Abrufen des Access Tokens.');
+      }
+
+      // Benutzerdaten von GitHub abrufen
+      const userResponse = await axios.get('https://api.github.com/user', {
+          headers: {
+              Authorization: `token ${accessToken}`
+          }
+      });
+
+      const userData = userResponse.data;
+
+      // Benutzer in der Datenbank speichern
+      const [user, created] = await User.findOrCreate({
+          where: { githubId: userData.id.toString() },
+          defaults: {
+              login: userData.login,
+              name: userData.name,
+              avatarUrl: userData.avatar_url
+          }
+      });
+
+      console.log(created ? 'Benutzer angelegt:' : 'Benutzer existiert bereits:', user.toJSON());
+
+      // Weiterleitung zu success.html mit dem Token in der URL
+      res.redirect(`/success.html?accessToken=${accessToken}`);
+  } catch (error) {
+      console.error('Fehler beim Authentifizierungsprozess:', error.response?.data || error.message);
+      res.status(500).send('Fehler beim Authentifizierungsprozess.');
+  }
+});
+
 
 
 

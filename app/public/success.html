@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Success</title>
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessToken = urlParams.get('accessToken');
+
+            if (accessToken) {
+                localStorage.setItem('accessToken', accessToken);
+                // Optional: Benutzer automatisch weiterleiten
+                window.location.href = '/';
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>Login erfolgreich!</h1>
+</body>
+</html>
