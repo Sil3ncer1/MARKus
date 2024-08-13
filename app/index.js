@@ -82,6 +82,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
+const { initDatabase, User } = require('./database');
+
+// Initialisiere die Datenbank
+initDatabase().then(() => {
+    console.log('Datenbank initialisiert.');
+}).catch((error) => {
+    console.error('Fehler beim Initialisieren der Datenbank:', error);
+});
+
 
 // Speicher-Konfiguration für multer
 const storage = multer.diskStorage({
@@ -96,23 +105,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const { initDatabase, User } = require('./database');
-
-// Initialisiere die Datenbank
-initDatabase().then(() => {
-    console.log('Datenbank initialisiert.');
-}).catch((error) => {
-    console.error('Fehler beim Initialisieren der Datenbank:', error);
-});
-
-
-
-// Root-Route, um die index.html zu senden
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-
 // Route für den Dateiupload
 app.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
@@ -122,6 +114,11 @@ app.post('/upload', upload.single('file'), (req, res) => {
   res.send('Datei erfolgreich hochgeladen: ' + req.file.filename);
 });
 
+
+// Root-Route, um die index.html zu senden
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 
 

@@ -697,8 +697,17 @@
         <div id="directory-button-hitbox">
             <div id="directory">
                 <ul id="directory-container"> 
-                    <p>Your Workstation</p>
+                    
+                    <ul id="directory-actions">
+                        <p>Your Workstation</p>
+                        <li id="directory-actions-add-folder"><img src="imgs/icons/folder-open-line.svg" alt=""></li>
+                        <li id="directory-actions-add-file"><img src="imgs/icons/add-box-line.svg" alt=""></li>
+                        <li id="directory-actions-upload"><img src="imgs/icons/upload-2-line.svg" alt=""></li>
+                        <input type="file" name="file" id="directory-actions-file-input" style="display: none;">
+                    </ul>
+
                     <hr>
+                    
                     <li class="directory-folder">
                         <details open>
                           <summary>Folder 1</summary>

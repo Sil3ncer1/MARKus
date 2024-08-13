@@ -12,7 +12,6 @@
 
     opacity: 1;
     z-index: 15;
-
 }
 
 
@@ -121,13 +120,41 @@
     font-size: 17px;
 
     white-space: nowrap;
-    overflow:hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
 
 .directory-files:hover, #directory summary:hover{
     background-color: var(--menuHighlight);
+}
+
+
+
+
+#directory-actions {
+    display: flex;
+    list-style-type: none;
+    width: 95%;
+    justify-content: right;
+}
+
+#directory-actions li {
+    width: 1.75em;
+    height: 1.75em;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 200ms ease-in-out;
+    cursor: pointer;
+    margin: 0 .33rem;
+    padding: .25rem;
+}
+
+#directory-actions li:hover {
+    background-color: var(--menuHighlight);
+    border-radius: .25rem;
 }
 
 @media screen and (max-width:1000px) {

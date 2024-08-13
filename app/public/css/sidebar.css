@@ -30,8 +30,8 @@
 }
 
 #table-picker table{
-border-spacing:3px;
-background:var(--navBackground);
+    border-spacing:3px;
+    background:var(--navBackground);
 }
 
 #table-picker td{
