@@ -110,18 +110,25 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   if (!req.file) {
       return res.status(400).send('Keine Datei hochgeladen.');
   }
-
+  
   const userId = req.body.userId;
 
   if (!userId) {
     return res.status(400).send('Keine Benutzer-ID angegeben.');
   }
 
+  const parentId = req.body.parentId;
+
+  if (!parentId) {
+    return res.status(400).send('Keine Parent-ID angegeben.');
+  }
+
   try {
     // Erstelle ein neues File-Objekt in der Datenbank
     const file = await File.create({
       filename: req.file.filename,
-      userId: userId
+      userId: userId,
+      directoryId: parentId 
     });
 
     console.log('Datei hochgeladen:', file.toJSON());

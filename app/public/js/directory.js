@@ -50,7 +50,6 @@ async function displayFilesAndDirectories() {
     const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
     const dirs = await fetchUserDirectories(userId);
 
-    let first = true;
 
     directoryExplorer.innerHTML = '';
 
@@ -87,6 +86,7 @@ async function traverseDirectories(dirs) {
 
 
         const folderContainer = document.createElement('details');
+        folderContainer.setAttribute('open', true);
         folder.appendChild(folderContainer);
 
         const folderHeader = document.createElement('summary');
@@ -242,6 +242,13 @@ directoryActionsFileInput.addEventListener('change', async () => {
     if (directoryActionsFileInput.files.length > 0) {
         const formData = new FormData();
         formData.append('file', directoryActionsFileInput.files[0]);
+
+        
+        let parent = null;
+        let elementWithClass = directoryExplorer.querySelectorAll('.selected-folder')[0];
+        if (elementWithClass) parent = elementWithClass.dataset.ownId;
+
+        formData.append('parentId', parent);
 
         const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
         formData.append('userId', userId);
