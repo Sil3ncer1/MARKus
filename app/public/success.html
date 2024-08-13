@@ -7,14 +7,12 @@
         window.onload = function() {
             const params = new URLSearchParams(window.location.search);
             const accessToken = params.get('accessToken');
-            const userId = params.get('userId');
 
-            if (accessToken && userId) {
+            if (accessToken) {
                 localStorage.setItem('accessToken', accessToken);
-                localStorage.setItem('userId', userId);
                 window.location.href = '/';
             } else {
-                alert('Fehler beim Speichern des Tokens oder der Benutzer-ID.');
+                alert('Fehler beim Speichern des Tokens');
             }
         };
     </script>

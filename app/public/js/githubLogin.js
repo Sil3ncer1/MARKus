@@ -18,7 +18,6 @@ function loginWithGitHub() {
 function logoutFromGitHub() {
     console.log('logout'); 
     localStorage.removeItem('accessToken'); 
-    localStorage.removeItem('userId');
     window.location.href = '/'; 
 }
 
@@ -43,7 +42,6 @@ window.onload = async function() {
                 LOGGED_IN = true;
             } else {
                 localStorage.removeItem('accessToken');
-                localStorage.removeItem('userId');
                 
                 console.log('Token ist ungültig, bitte erneut einloggen.');
             }
@@ -55,3 +53,37 @@ window.onload = async function() {
         LOGGED_IN = false;
     }
 };
+
+
+async function getUserIdByToken(accessToken) {
+    try {
+        const response = await fetch(`/get-user-by-token?accessToken=${encodeURIComponent(accessToken)}`);
+
+        if (!response.ok) {
+            throw new Error('Fehler beim Abrufen der Benutzer-ID');
+        }
+
+        const data = await response.json();
+        return data.userId;
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Benutzer-ID:', error);
+        throw error; // Weiterleiten des Fehlers, um anzuzeigen, dass der Abruf fehlschlägt
+    }
+}
+
+async function getRootByUserId(userId) {
+    try {
+        // Abrufen des Root-Verzeichnisses anhand der userId
+        const response = await fetch(`/getRootByUserId?userId=${encodeURIComponent(userId)}`);
+
+        if (!response.ok) {
+            throw new Error('Fehler beim Abrufen des Root-Verzeichnisses');
+        }
+
+        const data = await response.json();
+        return data; // Gibt das Root-Verzeichnis zurück
+    } catch (error) {
+        console.error('Fehler beim Abrufen des Root-Verzeichnisses:', error);
+        throw error; // Weiterleiten des Fehlers
+    }
+}

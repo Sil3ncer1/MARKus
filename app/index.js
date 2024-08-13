@@ -82,7 +82,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-const { initDatabase, User, File } = require('./database/database');
+const { sequelize, User, File, Directory, initDatabase } = require('./database/database');
 
 // Initialisiere die Datenbank
 initDatabase().then(() => {
@@ -134,6 +134,54 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 
+app.get('/files', async (req, res) => {
+  const userId = req.query.userId;
+
+  if (!userId) {
+    return res.status(400).send('Keine Benutzer-ID angegeben.');
+  }
+
+  try {
+    // Suche nach allen Dateien des Benutzers
+    const files = await File.findAll({
+      where: { userId: userId }
+    });
+
+    // Sende die Dateien als JSON-Antwort zurück
+    res.json(files);
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Dateien:', error);
+    res.status(500).send('Fehler beim Abrufen der Dateien.');
+  }
+});
+
+
+// Route zum Erstellen eines neuen Ordners
+app.post('/create-folder', async (req, res) => {
+  const { name, userId, parentId } = req.body;
+
+  if (!name || !userId) {
+      return res.status(400).send('Name oder Benutzer-ID fehlt.');
+  }
+
+  try {
+      // Erstelle einen neuen Ordner
+      const folder = await Directory.create({
+          name: name,
+          userId: userId,
+          parentId: parentId
+      });
+
+      res.json(folder);
+  } catch (error) {
+      console.error('Fehler beim Erstellen des Ordners:', error);
+      res.status(500).send('Fehler beim Erstellen des Ordners.');
+  }
+});
+
+
+
+
 // Root-Route, um die index.html zu senden
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -183,20 +231,85 @@ app.get('/auth/github/callback/', async (req, res) => {
           defaults: {
               login: userData.login,
               name: userData.name,
+              accessToken: accessToken,
               avatarUrl: userData.avatar_url
           }
       });
 
+      if (created) {
+          // Erstelle ein Root-Verzeichnis für den neuen Benutzer
+          await Directory.create({
+              name: 'Root', // Name für das Root-Verzeichnis
+              userId: user.id,
+              parent: null
+          });
+
+          console.log('Root-Verzeichnis für den neuen Benutzer erstellt.');
+      }
+
       console.log(created ? 'Benutzer angelegt:' : 'Benutzer existiert bereits:', user.toJSON());
 
       // Weiterleitung zu success.html mit dem Token in der URL
-      res.redirect(`/success.html?accessToken=${accessToken}&userId=${user.id}`);
+      res.redirect(`/success.html?accessToken=${accessToken}`);
   } catch (error) {
       console.error('Fehler beim Authentifizierungsprozess:', error.response?.data || error.message);
       res.status(500).send('Fehler beim Authentifizierungsprozess.');
   }
 });
 
+
+
+app.get('/get-user-by-token', async (req, res) => {
+  const accessToken = req.query.accessToken; // Den Token als Query-Parameter abfragen
+
+  if (!accessToken) {
+      return res.status(400).send('Access Token fehlt.');
+  }
+
+  try {
+      const user = await User.findOne({
+          where: { accessToken: accessToken }
+      });
+
+      if (!user) {
+          return res.status(404).send('Benutzer nicht gefunden.');
+      }
+
+      res.json({ userId: user.id }); // Nur die userId zurückgeben
+  } catch (error) {
+      console.error('Fehler beim Abrufen des Benutzers:', error);
+      res.status(500).send('Fehler beim Abrufen des Benutzers.');
+  }
+});
+
+
+app.get('/getRootByUserId', async (req, res) => {
+  const { userId } = req.query; // Benutzer-ID als Query-Parameter erhalten
+
+  if (!userId) {
+      return res.status(400).send('userId fehlt.');
+  }
+
+  try {
+      // Suche das Root-Verzeichnis anhand der userId und parentId null
+      const root = await Directory.findOne({
+          where: {
+              userId: userId,
+              parentId: null // Root-Verzeichnisse haben keinen Elternordner
+          }
+      });
+
+      if (!root) {
+          return res.status(404).send('Root-Verzeichnis nicht gefunden.');
+      }
+
+      // Root-Verzeichnis gefunden, sende es zurück
+      res.json(root);
+  } catch (error) {
+      console.error('Fehler beim Abrufen des Root-Verzeichnisses:', error);
+      res.status(500).send('Fehler beim Abrufen des Root-Verzeichnisses.');
+  }
+});
 
 
 
