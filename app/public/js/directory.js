@@ -30,15 +30,49 @@ const directoryActionsFileInput= document.getElementById('directory-actions-file
 // });
 
 
-function displayFilesInDirectory(files) {
-    files.forEach(file => {
-        
-        // const newFile = document.createElement('li');
-        // newFile.classList.add('directory-files');
 
-        // newFile.innerText = file.filename.split('-').slice(1).join('-');
+async function fetchUserDirectories(userId) {
+    try {
+      const response = await fetch(`/getDirs?userId=${userId}`);
+  
+      if (!response.ok) {
+        throw new Error('Fehler beim Abrufen der Verzeichnisse');
+      }
+  
+      const directories = await response.json();
+      console.log('Verzeichnisse:', directories);
+      return directories;
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Verzeichnisse:', error);
+      alert('Fehler beim Abrufen der Verzeichnisse.');
+    }
+  }
 
-        // directoryContainer.appendChild(newFile);
+
+async function displayFilesAndDirectories() {
+    const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
+    console.log(userId);
+    const dirs = await fetchUserDirectories(userId);
+    console.log(dirs);
+
+
+    dirs.forEach(dir => {
+        if (dir.parentId !== null) {
+            const folder = document.createElement('li');
+            folder.classList.add('directory-folder');
+            
+            const folderContainer = document.createElement('details');
+            folder.appendChild(folderContainer);
+            
+            const folderHeader = document.createElement('summary');
+            folderHeader.innerHTML = dir.name;
+            folderContainer.appendChild(folderHeader);
+
+            const folderList = document.createElement('ul');
+            folderContainer.appendChild(folderList);            
+
+            directoryContainer.appendChild(folder);
+        }
     });
 }
 
@@ -125,7 +159,7 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
                 const folder = await response.json();
                 console.log('Ordner erfolgreich erstellt:', folder);
                 // Aktualisiere die Verzeichnisanzeige
-                displayFilesInDirectory([folder]);
+                displayFilesAndDirectories();
             } else {
                 alert('Fehler beim Erstellen des Ordners.');
             }

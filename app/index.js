@@ -134,7 +134,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 
-app.get('/files', async (req, res) => {
+app.get('/getFiles', async (req, res) => {
   const userId = req.query.userId;
 
   if (!userId) {
@@ -155,13 +155,35 @@ app.get('/files', async (req, res) => {
   }
 });
 
+app.get('/getDirs', async (req, res) => {
+  const userId = req.query.userId;
+
+  if (!userId) {
+    return res.status(400).send('Keine Benutzer-ID angegeben.');
+  }
+
+  try {
+    // Suche nach allen Verzeichnissen des Benutzers
+    const dirs = await Directory.findAll({
+      where: { userId: userId }
+    });
+
+    // Sende die Verzeichnisse als JSON-Antwort zurück
+    res.json(dirs);
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Verzeichnisse:', error);
+    res.status(500).send('Fehler beim Abrufen der Verzeichnisse.');
+  }
+});
+
+
 
 // Route zum Erstellen eines neuen Ordners
 app.post('/create-folder', async (req, res) => {
   const { name, userId, parentId } = req.body;
 
   if (!name || !userId) {
-      return res.status(400).send('Name oder Benutzer-ID fehlt.');
+    return res.status(400).send('Name oder Benutzer-ID fehlt.');
   }
 
   try {
