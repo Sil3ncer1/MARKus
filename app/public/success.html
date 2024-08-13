@@ -2,22 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Success</title>
+    <title>Success</title>
     <script>
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const accessToken = urlParams.get('accessToken');
+            const params = new URLSearchParams(window.location.search);
+            const accessToken = params.get('accessToken');
+            const userId = params.get('userId');
 
-            if (accessToken) {
+            if (accessToken && userId) {
                 localStorage.setItem('accessToken', accessToken);
-                // Optional: Benutzer automatisch weiterleiten
+                localStorage.setItem('userId', userId);
                 window.location.href = '/';
+            } else {
+                alert('Fehler beim Speichern des Tokens oder der Benutzer-ID.');
             }
         };
     </script>
 </head>
 <body>
-    <h1>Login erfolgreich!</h1>
 </body>
 </html>

@@ -3,6 +3,9 @@ const CLIENT_ID = "Ov23liTsBVLk8CrUWAyW";
 const loginButton = document.getElementById('sidebar-github-login');
 const logoutButton = document.getElementById('sidebar-github-logout');
 
+let LOGGED_IN = false;
+let USED_ID = "";
+
 loginButton.addEventListener('click', e => loginWithGitHub());
 logoutButton.addEventListener('click', e => logoutFromGitHub());
 
@@ -15,6 +18,7 @@ function loginWithGitHub() {
 function logoutFromGitHub() {
     console.log('logout'); 
     localStorage.removeItem('accessToken'); 
+    localStorage.removeItem('userId');
     window.location.href = '/'; 
 }
 
@@ -35,8 +39,12 @@ window.onload = async function() {
                 console.log(userData);
                 logoutButton.style.display = 'flex';
                 loginButton.style.display = 'none';
+
+                LOGGED_IN = true;
             } else {
                 localStorage.removeItem('accessToken');
+                localStorage.removeItem('userId');
+                
                 console.log('Token ist ungültig, bitte erneut einloggen.');
             }
         } catch (error) {
@@ -44,5 +52,6 @@ window.onload = async function() {
         }
     } else {
         logoutButton.style.display = 'none';
+        LOGGED_IN = false;
     }
 };

@@ -82,7 +82,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-const { initDatabase, User } = require('./database/database');
+const { initDatabase, User, File } = require('./database/database');
 
 // Initialisiere die Datenbank
 initDatabase().then(() => {
@@ -106,12 +106,31 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Route für den Dateiupload
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/upload', upload.single('file'), async (req, res) => {
   if (!req.file) {
       return res.status(400).send('Keine Datei hochgeladen.');
   }
-  console.log('Datei hochgeladen:', req.file);
-  res.send('Datei erfolgreich hochgeladen: ' + req.file.filename);
+
+  const userId = req.body.userId;
+
+  if (!userId) {
+    return res.status(400).send('Keine Benutzer-ID angegeben.');
+  }
+
+  try {
+    // Erstelle ein neues File-Objekt in der Datenbank
+    const file = await File.create({
+      filename: req.file.filename,
+      userId: userId
+    });
+
+    console.log('Datei hochgeladen:', file.toJSON());
+
+    res.send('Datei erfolgreich hochgeladen: ' + req.file.filename);
+  } catch (error) {
+    console.error('Fehler beim Speichern der Datei:', error);
+    res.status(500).send('Fehler beim Speichern der Datei.');
+  }
 });
 
 
@@ -171,7 +190,7 @@ app.get('/auth/github/callback/', async (req, res) => {
       console.log(created ? 'Benutzer angelegt:' : 'Benutzer existiert bereits:', user.toJSON());
 
       // Weiterleitung zu success.html mit dem Token in der URL
-      res.redirect(`/success.html?accessToken=${accessToken}`);
+      res.redirect(`/success.html?accessToken=${accessToken}&userId=${user.id}`);
   } catch (error) {
       console.error('Fehler beim Authentifizierungsprozess:', error.response?.data || error.message);
       res.status(500).send('Fehler beim Authentifizierungsprozess.');

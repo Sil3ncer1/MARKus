@@ -41,13 +41,21 @@ directoryActionsAddFile.addEventListener("click", (event) => {
 });
 
 directoryActionsUpload.addEventListener("click", (event) => { 
+    if (LOGGED_IN == false && localStorage.getItem("userId")) {
+        showPopup("You must be logged in");
+        return;
+    }
     directoryActionsFileInput.click();
 });
 
 directoryActionsFileInput.addEventListener('change', async () => {
+
     if (directoryActionsFileInput.files.length > 0) {
         const formData = new FormData();
         formData.append('file', directoryActionsFileInput.files[0]);
+
+        console.log(localStorage.getItem("userId"));
+        formData.append('userId', localStorage.getItem("userId"));
 
         try {
             const response = await fetch('/upload', {
