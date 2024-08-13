@@ -157,6 +157,11 @@
     border-radius: .25rem;
 }
 
+.selected-folder summary {
+    background-color: var(--menuHighlight);
+}
+
+
 @media screen and (max-width:1000px) {
     #directory-button-hitbox {
         --directoryHitboxSize: 25rem;

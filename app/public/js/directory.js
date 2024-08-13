@@ -3,6 +3,7 @@ const directoryBtn = document.getElementById('directory-button');
 const directoryHitboxBtn = document.getElementById('directory-button-hitbox');
 
 const directoryContainer = document.getElementById('directory-container');
+const directoryExplorer = document.getElementById('directory-explorer');
 
 const directoryActionsAddFolder = document.getElementById('directory-actions-add-folder');
 const directoryActionsAddFile = document.getElementById('directory-actions-add-file');
@@ -10,24 +11,9 @@ const directoryActionsUpload = document.getElementById('directory-actions-upload
 const directoryActionsFileInput= document.getElementById('directory-actions-file-input');
 
 
-// document.addEventListener('DOMContentLoaded', async () => {  
-//     const userId = localStorage.getItem('userId');
-  
-//     if (userId) {
-//         try {
-//             const response = await fetch(`/files?userId=${userId}`);
-//             if (response.ok) {
-//                 const files = await response.json();
-//                 console.log(files);
-//                 displayFilesInDirectory(files);
-//             } else {
-//                 console.error('Fehler beim Abrufen der Dateien.');
-//             }
-//         } catch (error) {
-//             console.error('Fehler beim Abrufen der Dateien:', error);
-//         }
-//     }
-// });
+document.addEventListener('DOMContentLoaded', async () => {  
+    displayFilesAndDirectories();
+});
 
 
 
@@ -46,35 +32,95 @@ async function fetchUserDirectories(userId) {
       console.error('Fehler beim Abrufen der Verzeichnisse:', error);
       alert('Fehler beim Abrufen der Verzeichnisse.');
     }
-  }
+}
+
+function findClosestFolderElement(element) {
+    while (element) {
+        if (element.classList.contains('directory-folder'))
+            return element;
+        
+        element = element.parentElement;
+    }
+
+    return null;
+}
 
 
 async function displayFilesAndDirectories() {
     const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
-    console.log(userId);
     const dirs = await fetchUserDirectories(userId);
-    console.log(dirs);
 
+    let first = true;
 
-    dirs.forEach(dir => {
-        if (dir.parentId !== null) {
-            const folder = document.createElement('li');
-            folder.classList.add('directory-folder');
-            
-            const folderContainer = document.createElement('details');
-            folder.appendChild(folderContainer);
-            
-            const folderHeader = document.createElement('summary');
-            folderHeader.innerHTML = dir.name;
-            folderContainer.appendChild(folderHeader);
+    directoryExplorer.innerHTML = '';
 
-            const folderList = document.createElement('ul');
-            folderContainer.appendChild(folderList);            
-
-            directoryContainer.appendChild(folder);
-        }
-    });
+    console.log(await traverseDirectories(dirs));
 }
+
+
+
+async function traverseDirectories(dirs) {
+    const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
+    const root = await getRootByUserId(userId);
+
+    const dirMap = new Map();
+    dirs.forEach(dir => dirMap.set(dir.id, dir));
+
+    const createFolderElement = (dir) => {
+        const folder = document.createElement('li');
+        folder.classList.add('directory-folder');
+        folder.dataset.parentId = dir.parentId;
+        folder.dataset.ownId = dir.id;
+
+
+        folder.addEventListener('click', (event) => {
+            let elementsWithClass = directoryExplorer.querySelectorAll('.selected-folder');
+
+            elementsWithClass.forEach(function (element) {
+                element.classList.remove('selected-folder');
+            });
+
+            
+            let nearestFolder = findClosestFolderElement(event.target);
+            nearestFolder.classList.add('selected-folder');
+        });
+
+
+        const folderContainer = document.createElement('details');
+        folder.appendChild(folderContainer);
+
+        const folderHeader = document.createElement('summary');
+        folderHeader.innerHTML = dir.name;
+        folderContainer.appendChild(folderHeader);
+
+        const folderList = document.createElement('ul');
+        folderContainer.appendChild(folderList);
+
+        return { folder, folderList };
+    }
+
+    const appendChildren = (parentElement, parentDir) => {
+        const children = getDirectoriesByParentId(parentDir, dirs);
+        children.forEach(child => {
+            const { folder, folderList } = createFolderElement(child);
+            parentElement.appendChild(folder);
+            appendChildren(folderList, child);
+        });
+    }
+
+    // Root-Verzeichnis erstellen und hinzufügen
+    const rootElement = createFolderElement(root);
+    directoryExplorer.innerHTML = ''; // Leeren Sie das Verzeichnis, bevor Sie es neu aufbauen.
+    directoryExplorer.appendChild(rootElement.folder);
+
+    // Unterordner zum Root hinzufügen
+    appendChildren(rootElement.folder.querySelector('ul'), root);
+}
+
+function getDirectoriesByParentId(parentDir, dirs) {
+    return dirs.filter(dir => dir.parentId === parentDir.id);
+}
+
 
 
 /*
@@ -143,6 +189,14 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
             
             const root = await getRootByUserId(userId); // Abrufen des Root-Ordners
 
+            let elementsWithClass = directoryExplorer.querySelectorAll('.selected-folder')[0];
+
+            console.log(elementsWithClass);
+
+            let parent = root.id;
+
+            if (elementsWithClass) parent = elementsWithClass.dataset.ownId;
+
             const response = await fetch('/create-folder', {
                 method: 'POST',
                 headers: {
@@ -151,7 +205,7 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
                 body: JSON.stringify({
                     name: folderName,
                     userId: userId,
-                    parentId: root.id // Setze parentId auf die ID des Root-Ordners
+                    parentId: parent 
                 })
             });
 
