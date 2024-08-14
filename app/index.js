@@ -107,23 +107,21 @@ const upload = multer({ storage: storage });
 
 // Route für den Dateiupload
 app.post('/upload', upload.single('file'), async (req, res) => {
-  if (!req.file) {
-      return res.status(400).send('Keine Datei hochgeladen.');
-  }
-  
+  if (!req.file) return res.status(400).send('Keine Datei hochgeladen.');
+    
   const userId = req.body.userId;
-
-  if (!userId) {
-    return res.status(400).send('Keine Benutzer-ID angegeben.');
-  }
+  if (!userId) return res.status(400).send('Keine Benutzer-ID angegeben.');
 
   const parentId = req.body.parentId;
-
-  if (!parentId) {
-    return res.status(400).send('Keine Parent-ID angegeben.');
-  }
-
+  if (!parentId) return res.status(400).send('Keine Parent-ID angegeben.');
+  
   try {
+    // Überprüfen, ob das Verzeichnis existiert
+    const parentDirectory = await Directory.findByPk(parentId);
+    if (!parentDirectory) {
+        return res.status(400).send('Das angegebene Verzeichnis existiert nicht.');
+    }
+
     // Erstelle ein neues File-Objekt in der Datenbank
     const file = await File.create({
       filename: req.file.filename,
@@ -172,8 +170,8 @@ app.get('/getDirs', async (req, res) => {
   try {
     // Suche nach allen Verzeichnissen des Benutzers
     const dirs = await Directory.findAll({
-      where: { userId: userId }
-    });
+    where: { userId: userId }
+  });
 
     // Sende die Verzeichnisse als JSON-Antwort zurück
     res.json(dirs);
@@ -183,6 +181,24 @@ app.get('/getDirs', async (req, res) => {
   }
 });
 
+app.get('/getFiles', async (req, res) => {
+  const userId = req.query.userId;
+
+  if (!userId) return res.status(400).send('Keine Benutzer-ID angegeben.');
+
+  try {
+    // Suche nach allen Dateien des Benutzers
+    const files = await File.findAll({
+      where: { userId: userId }
+    });
+
+    // Sende die Dateien als JSON-Antwort zurück
+    res.json(files);
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Dateien:', error);
+    res.status(500).send('Fehler beim Abrufen der Dateien.');
+  }
+});
 
 
 // Route zum Erstellen eines neuen Ordners

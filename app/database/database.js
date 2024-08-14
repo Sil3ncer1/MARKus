@@ -6,6 +6,7 @@ const sequelize = new Sequelize({
     storage: 'database/database.sqlite' // Die SQLite-Datei
 });
 
+// Definition des User-Modells
 const User = sequelize.define('User', {
     githubId: {
         type: DataTypes.STRING,
@@ -29,6 +30,7 @@ const User = sequelize.define('User', {
     }
 });
 
+// Definition des Directory-Modells
 const Directory = sequelize.define('Directory', {
     name: {
         type: DataTypes.STRING,
@@ -52,6 +54,7 @@ const Directory = sequelize.define('Directory', {
     }
 });
 
+// Definition des File-Modells
 const File = sequelize.define('File', {
     filename: {
         type: DataTypes.STRING,
@@ -64,12 +67,24 @@ const File = sequelize.define('File', {
             model: Directory,
             key: 'id'
         }
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        }
     }
 });
 
 // User und Directory Beziehung
-User.hasOne(Directory, { foreignKey: 'userId' });
+User.hasMany(Directory, { foreignKey: 'userId' });
 Directory.belongsTo(User, { foreignKey: 'userId' });
+
+// User und File Beziehung
+User.hasMany(File, { foreignKey: 'userId' });
+File.belongsTo(User, { foreignKey: 'userId' });
 
 // Directory und File Beziehung
 Directory.hasMany(File, { foreignKey: 'directoryId' });

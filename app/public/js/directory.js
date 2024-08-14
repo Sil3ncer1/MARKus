@@ -34,6 +34,25 @@ async function fetchUserDirectories(userId) {
     }
 }
 
+
+async function fetchUserFiles(userId) {
+    try {
+        const response = await fetch(`/getFiles?userId=${userId}`);
+    
+        if (!response.ok) {
+            throw new Error('Fehler beim Abrufen der Dateien');
+        }
+    
+        const files = await response.json();
+        console.log('Dateien:', files);
+        return files;
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Dateien:', error);
+        alert('Fehler beim Abrufen der Dateien.');
+    }
+}
+
+
 function findClosestFolderElement(element) {
     while (element) {
         if (element.classList.contains('directory-folder'))
@@ -49,11 +68,27 @@ function findClosestFolderElement(element) {
 async function displayFilesAndDirectories() {
     const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
     const dirs = await fetchUserDirectories(userId);
-
+    const files = await fetchUserFiles(userId);
 
     directoryExplorer.innerHTML = '';
 
-    console.log(await traverseDirectories(dirs));
+    await traverseDirectories(dirs);
+
+    console.log(files);
+
+    files.forEach(file =>  {
+        const fileElement = document.createElement('li');
+        fileElement.innerHTML = file.filename.split('-').slice(1).join('-');;
+        fileElement.dataset.ownId = file.id;
+        fileElement.classList.add('directory-files');
+
+        const dir = document.querySelector(`[data-own-id="${file.directoryId}"]`);
+
+
+        if (dir) dir.querySelector('ul').appendChild(fileElement);
+
+    });
+
 }
 
 
@@ -238,36 +273,36 @@ directoryActionsUpload.addEventListener("click", (event) => {
 });
 
 directoryActionsFileInput.addEventListener('change', async () => {
+    if (directoryActionsFileInput.files.length <= 0) return;
 
-    if (directoryActionsFileInput.files.length > 0) {
-        const formData = new FormData();
-        formData.append('file', directoryActionsFileInput.files[0]);
+    const formData = new FormData();
+    formData.append('file', directoryActionsFileInput.files[0]);
 
-        
-        let parent = null;
-        let elementWithClass = directoryExplorer.querySelectorAll('.selected-folder')[0];
-        if (elementWithClass) parent = elementWithClass.dataset.ownId;
+    // Korrektur: Abrufen des ersten Elements direkt
+    const elementWithClass = directoryExplorer.querySelector('.selected-folder');
+    const parentId = elementWithClass ? elementWithClass.dataset.ownId : null;
 
-        formData.append('parentId', parent);
+    formData.append('parentId', parentId);
 
-        const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
-        formData.append('userId', userId);
+    const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
+    formData.append('userId', userId);
 
-        try {
-            const response = await fetch('/upload', {
-                method: 'POST',
-                body: formData
-            });
+    try {
+        const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
 
-            if (response.ok) {
-                const message = await response.text();
-                alert(`Datei erfolgreich hochgeladen: ${directoryActionsFileInput.files[0].name}`);
-            } else {
-                alert('Fehler beim Hochladen der Datei.');
-            }
-        } catch (error) {
-            console.error('Fehler beim Hochladen:', error);
+        if (response.ok) {
+            const message = await response.text();
+            alert(`Datei erfolgreich hochgeladen: ${directoryActionsFileInput.files[0].name}`);
+        } else {
             alert('Fehler beim Hochladen der Datei.');
         }
+    } catch (error) {
+        console.error('Fehler beim Hochladen:', error);
+        alert('Fehler beim Hochladen der Datei.');
     }
+
+    displayFilesAndDirectories();
 });
