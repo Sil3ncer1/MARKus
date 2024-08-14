@@ -26,9 +26,9 @@ const md = require('markdown-it')({
 const app = express();
 const port = 3000;
 
-const CLIENT_ID = 'Ov23liTsBVLk8CrUWAyW';
-const CLIENT_SECRET = 'b3b25e4981bb07f870e3ab5dce363746b9267a52'; 
-
+require('dotenv').config();
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
 const TurndownService = require('turndown');
 const turndownPluginGfm = require('turndown-plugin-gfm');

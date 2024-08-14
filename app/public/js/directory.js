@@ -86,7 +86,6 @@ async function displayFilesAndDirectories() {
 
 
         if (dir) dir.querySelector('ul').appendChild(fileElement);
-
     });
 
 }
