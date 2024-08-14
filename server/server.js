@@ -20,8 +20,10 @@ io.on('connection', (socket) => {
             id: rooms.length,
             roomID: roomID,
             content: docContent,
-            users: [socket.id]
+            users: [socket.id],
+            stateManager: new StateManager(docContent)
         };
+        newRoom.stateManager.pushState(docContent);
         rooms.push(newRoom);
         
         socket.join(roomID);
@@ -51,13 +53,12 @@ io.on('connection', (socket) => {
     socket.on('element-changed', (roomID, change) => {
         const room = rooms.find(room => room.roomID === roomID);
         if (room) {
-            room.content[change.position] = change.content;
+            room.content[change.position-1] = change.content;
             io.to(roomID).emit('element-changed', change);
         }
     });
 
     socket.on('element-removed', (roomID, change) => {
-        console.log(change)
         const room = rooms.find(room => room.roomID === roomID);
         if (room) {
             room.content.splice(change.position, 1);
@@ -69,7 +70,6 @@ io.on('connection', (socket) => {
         const room = rooms.find(room => room.roomID === roomID);
         if (room) {
             [room.content[change.position1], room.content[change.position2]] = [room.content[change.position2], room.content[change.position1]];
-            console.log(room.content)
             io.to(roomID).emit('element-swapped', change);
         }
     });
@@ -80,6 +80,65 @@ io.on('connection', (socket) => {
             io.to(roomID).emit('editing-element', elementID);
         }
     });
+
+    socket.on('state-undo', roomID => {
+        const room = rooms.find(room => room.roomID === roomID);
+        if (room) {
+            io.to(roomID).emit('send-undo', room.stateManager.undo());
+        }
+    });
+
+    socket.on('state-redo', roomID => {
+        const room = rooms.find(room => room.roomID === roomID);
+        if (room) {
+            io.to(roomID).emit('send-redo', room.stateManager.redo());
+        }
+    });
+
+    socket.on('state-push', roomID => {
+        const room = rooms.find(room => room.roomID === roomID);
+        if (room) {
+            room.stateManager.pushState(room.content);
+        }
+    });
 });
+
+
+
+class StateManager {
+    constructor(targetElement) {
+        this.targetElement = targetElement;
+        this.stateHistory = [];
+        this.currentStateIndex = -1;
+    }
+
+    pushState(stateArray) {
+        // Ensure we're storing a copy of the array to avoid mutations
+        const stateCopy = [...stateArray];
+
+        // Clear any redo history if a new state is pushed
+        this.stateHistory = this.stateHistory.slice(0, this.currentStateIndex + 1);
+
+        // Push the new state and update the current state index
+        this.stateHistory.push(stateCopy);
+        this.currentStateIndex = this.stateHistory.length - 1;
+    }
+
+    undo() {
+        if (this.currentStateIndex > 0) {
+            this.currentStateIndex--;
+            return [...this.stateHistory[this.currentStateIndex]];  // Return a copy of the state
+        }
+        return null;
+    }
+
+    redo() {
+        if (this.currentStateIndex < this.stateHistory.length - 1) {
+            this.currentStateIndex++;
+            return [...this.stateHistory[this.currentStateIndex]];  // Return a copy of the state
+        }
+        return null;
+    }
+}
 
 http.listen(8080, () => console.log('listening on http://localhost:8080'));

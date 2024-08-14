@@ -26,7 +26,6 @@ collabOpenRoomBtn.addEventListener('click', e => {
 
     const doc = document.getElementById('document-doc');
     const childrenArray = Array.from(doc.children).map(child => child.outerHTML);
-    console.log(childrenArray)
     socket.emit('create-room', childrenArray);
 
     socket.on('room-created', roomID => {
@@ -44,20 +43,19 @@ collabOpenRoomBtn.addEventListener('click', e => {
     });
 
     socket.on('element-changed', docChanges => {
-        console.log(docChanges)
-            const changedElement = document.querySelector('[data-id="' + docChanges.id + '"]');
-            if (changedElement) {
-                changedElement.outerHTML = docChanges.content;
-                changedElement.classList.remove('document-element-blocked');
-            }
-                else {
-                const doc = document.getElementById('document-doc');
-                const element = document.createElement('div');
-                element.innerHTML = docChanges.content;
-                console.log(element.innerHTML)
-                console.log(doc.insertBefore(element.firstChild, doc.children[docChanges.position-1]));
-            }
-            enableDragAndDrop();
+        const changedElement = document.querySelector('[data-id="' + docChanges.id + '"]');
+        if (changedElement) {
+            changedElement.outerHTML = docChanges.content;
+            changedElement.classList.remove('document-element-blocked');
+        }
+            else {
+            const doc = document.getElementById('document-doc');
+            const element = document.createElement('div');
+            element.innerHTML = docChanges.content;
+            console.log(doc.insertBefore(element.firstChild, doc.children[docChanges.position-1]));
+        }
+        enableDragAndDrop();
+        showEmptyLineContainer();
     });
 
     socket.on('element-swapped', change => {
@@ -82,13 +80,29 @@ collabOpenRoomBtn.addEventListener('click', e => {
         const removedElement = document.querySelector('[data-id="' + elementID + '"]');
 
         if (removedElement) removedElement.remove();
-        if (!doc.hasChildNodes()) showEmptyLineContainer();
     });
 
     socket.on('editing-element', elementID => {
         const editedElement = document.querySelector('[data-id="' + elementID + '"]');
 
         editedElement.classList.add('document-element-blocked');
+
+    });
+
+    socket.on('send-undo', content => {
+        console.log('undo recveived')
+        let doc = document.getElementById('document-doc');
+        if(content != null)
+        doc.innerHTML = content.join('');
+        enableDragAndDrop();
+    });
+
+    socket.on('send-redo', content => {
+        console.log('redo recveived')
+        let doc = document.getElementById('document-doc');
+        if(content != null)
+        doc.innerHTML = content.join('');
+        enableDragAndDrop();
     });
 });
 
@@ -127,20 +141,19 @@ collabJoinRoomBtn.addEventListener('click', e => {
         });
 
         socket.on('element-changed', docChanges => {
-            console.log(docChanges)
-                const changedElement = document.querySelector('[data-id="' + docChanges.id + '"]');
-                if (changedElement) {
-                    changedElement.outerHTML = docChanges.content;
-                    changedElement.classList.remove('document-element-blocked');
-                }
-                    else {
-                    const doc = document.getElementById('document-doc');
-                    const element = document.createElement('div');
-                    element.innerHTML = docChanges.content;
-                    console.log(element.innerHTML)
-                    console.log(doc.insertBefore(element.firstChild, doc.children[docChanges.position-1]));
-                }
-                enableDragAndDrop();
+            const changedElement = document.querySelector('[data-id="' + docChanges.id + '"]');
+            if (changedElement) {
+                changedElement.outerHTML = docChanges.content;
+                changedElement.classList.remove('document-element-blocked');
+            }
+                else {
+                const doc = document.getElementById('document-doc');
+                const element = document.createElement('div');
+                element.innerHTML = docChanges.content;
+                console.log(doc.insertBefore(element.firstChild, doc.children[docChanges.position-1]));
+            }
+            enableDragAndDrop();
+            showEmptyLineContainer();
         });
 
         
@@ -167,8 +180,6 @@ collabJoinRoomBtn.addEventListener('click', e => {
             if (removedElement) removedElement.remove();
 
             const doc = document.getElementById('document-doc');
-            if (!doc.hasChildNodes()) showEmptyLineContainer();
-            
         });
 
         socket.on('editing-element', elementID => {
@@ -176,10 +187,22 @@ collabJoinRoomBtn.addEventListener('click', e => {
 
             editedElement.classList.add('document-element-blocked');
         });
-
-
-        socket.on('error', errorMsg => {
-            alert(errorMsg);
+    
+        socket.on('send-undo', content => {
+            console.log('undo recveived')
+            let doc = document.getElementById('document-doc');
+            if(content != null)
+            doc.innerHTML = content.join('');
+            enableDragAndDrop();
+        });
+    
+        socket.on('send-redo', content => {
+            console.log('redo recveived')
+            let doc = document.getElementById('document-doc');
+            if(content != null)
+            doc.innerHTML = content.join('');
+            enableDragAndDrop();
+        
         });
     }
 });
@@ -207,11 +230,9 @@ collabExitRoomBtn.addEventListener('click', e => {
 
 function documentChanged(elementID) {
     console.log("document Changed");
-    console.log(elementID);
     const changedElement = document.querySelector('[data-id="' + elementID + '"]');
 
     const position = Array.from(document.getElementById('document-doc').children).indexOf(changedElement);
-    console.log(position)
     const change = {
         id: elementID,
         content: changedElement.outerHTML,
@@ -247,6 +268,21 @@ function switchElement(elementID1, elementID2) {
     socket.emit('element-switched', currentRoomID, change);
 }
 
+
+function sendUndoState() {
+    console.log("element Undo");
+    socket.emit('state-undo', currentRoomID);
+}
+
+function sendRedoState() {
+    console.log("element Redo");
+    socket.emit('state-redo', currentRoomID);
+}
+
+function sendPushState() {
+    console.log("element push");
+    socket.emit('state-push', currentRoomID);
+}
 
 function blockEditedElement(elementID) {
     socket.emit('editing-element', currentRoomID, elementID);

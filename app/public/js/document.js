@@ -777,14 +777,16 @@ function enableDragAndDrop() {
             
       const childA = parentA.firstElementChild;
 
-      if (socket)
-         switchElement(parentA.dataset.id, parentB.dataset.id);
+      if (socket){
+          switchElement(parentA.dataset.id, parentB.dataset.id);
+      }
       else{
         // Swap the order of the parent elements
         parentA.insertBefore(parentB.firstElementChild, parentA.firstElementChild);
         parentB.insertBefore(childA, parentB.firstElementChild);
-        
-    }
+      }
+      const doc = document.getElementById('document-doc');
+      stateManager.pushState(doc.innerHTML);
     });
   });
 }
@@ -878,8 +880,11 @@ function handleFiles(files) {
         let filename = document.getElementById('settings-meta-filename');
 
         for (let child of allElements) {
+          const position = Array.from(document.getElementById('document-doc').children).indexOf(child);
+          if(socket) removeElement(child.dataset.id, position);
           child.remove();
         }
+        
         
         addNewTextarea(null, true);
         
