@@ -4,7 +4,7 @@ const loginButton = document.getElementById('sidebar-github-login');
 const logoutButton = document.getElementById('sidebar-github-logout');
 
 let LOGGED_IN = false;
-let USED_ID = "";
+let USER_ID = "";
 
 loginButton.addEventListener('click', e => loginWithGitHub());
 logoutButton.addEventListener('click', e => logoutFromGitHub());
@@ -12,7 +12,6 @@ logoutButton.addEventListener('click', e => logoutFromGitHub());
 function loginWithGitHub() {
     window.location.assign('https://github.com/login/oauth/authorize?client_id=' + CLIENT_ID);
     console.log('login');
-
 }
 
 function logoutFromGitHub() {
@@ -42,11 +41,10 @@ window.onload = async function() {
                 LOGGED_IN = true;
             } else {
                 localStorage.removeItem('accessToken');
-                
-                console.log('Token ist ungültig, bitte erneut einloggen.');
+                console.log('Token is invalid, please log in again.');
             }
         } catch (error) {
-            console.error('Fehler beim Abrufen der Benutzerdaten:', error);
+            console.error('Error fetching user data:', error);
         }
     } else {
         logoutButton.style.display = 'none';
@@ -54,37 +52,36 @@ window.onload = async function() {
     }
 };
 
-
 async function getUserIdByToken(accessToken) {
     try {
         const response = await fetch(`/get-user-by-token?accessToken=${encodeURIComponent(accessToken)}`);
 
         if (!response.ok) {
-            throw new Error('Fehler beim Abrufen der Benutzer-ID');
+            throw new Error('Error fetching user ID');
         }
 
         const data = await response.json();
         return data.userId;
     } catch (error) {
-        console.error('Fehler beim Abrufen der Benutzer-ID:', error);
-        throw error; // Weiterleiten des Fehlers, um anzuzeigen, dass der Abruf fehlschlägt
+        console.error('Error fetching user ID:', error);
+        throw error; 
     }
 }
 
 async function getRootByUserId(userId) {
     try {
-        // Abrufen des Root-Verzeichnisses anhand der userId
+        // Fetch the root directory by userId
         const response = await fetch(`/getRootByUserId?userId=${encodeURIComponent(userId)}`);
 
         if (!response.ok) {
-            throw new Error('Fehler beim Abrufen des Root-Verzeichnisses');
+            throw new Error('Error fetching root directory');
         }
 
         const data = await response.json();
-        return data; // Gibt das Root-Verzeichnis zurück
+        return data;
     } catch (error) {
-        console.error('Fehler beim Abrufen des Root-Verzeichnisses:', error);
-        throw error; // Weiterleiten des Fehlers
+        console.error('Error fetching root directory:', error);
+        throw error; 
     }
 }
 
@@ -93,13 +90,13 @@ async function getFileById(id) {
         const response = await fetch(`/getFileById?ownId=${encodeURIComponent(id)}`);
 
         if (!response.ok) {
-            throw new Error('Fehler beim Abrufen des Root-Verzeichnisses');
+            throw new Error('Error fetching file');
         }
 
         const data = await response.json();
-        return data; // Gibt das Root-Verzeichnis zurück
+        return data; 
     } catch (error) {
-        console.error('Fehler beim Abrufen des Root-Verzeichnisses:', error);
-        throw error; // Weiterleiten des Fehlers
+        console.error('Error fetching file:', error);
+        throw error; 
     }
 }

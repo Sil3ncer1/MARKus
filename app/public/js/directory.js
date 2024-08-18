@@ -8,50 +8,45 @@ const directoryExplorer = document.getElementById('directory-explorer');
 const directoryActionsAddFolder = document.getElementById('directory-actions-add-folder');
 const directoryActionsAddFile = document.getElementById('directory-actions-add-file');
 const directoryActionsUpload = document.getElementById('directory-actions-upload');
-const directoryActionsFileInput= document.getElementById('directory-actions-file-input');
-
+const directoryActionsFileInput = document.getElementById('directory-actions-file-input');
 
 document.addEventListener('DOMContentLoaded', async () => {  
     displayFilesAndDirectories();
 });
 
-
-
 async function fetchUserDirectories(userId) {
     try {
-      const response = await fetch(`/getDirs?userId=${userId}`);
+        const response = await fetch(`/getDirs?userId=${userId}`);
   
-      if (!response.ok) {
-        throw new Error('Fehler beim Abrufen der Verzeichnisse');
-      }
+        if (!response.ok) {
+            throw new Error('Error fetching directories');
+        }
   
-      const directories = await response.json();
-      console.log('Verzeichnisse:', directories);
-      return directories;
+        const directories = await response.json();
+        console.log('Directories:', directories);
+        return directories;
     } catch (error) {
-      console.error('Fehler beim Abrufen der Verzeichnisse:', error);
-      alert('Fehler beim Abrufen der Verzeichnisse.');
+        console.error('Error fetching directories:', error);
+        alert('Error fetching directories.');
     }
 }
-
 
 async function fetchUserFiles(userId) {
     try {
         const response = await fetch(`/getFiles?userId=${userId}`);
     
         if (!response.ok) {
-            throw new Error('Fehler beim Abrufen der Dateien');
+            throw new Error('Error fetching files');
         }
     
         const files = await response.json();
-        console.log('Dateien:', files);
+        console.log('Files:', files);
         return files;
     } catch (error) {
-        console.error('Fehler beim Abrufen der Dateien:', error);
-        alert('Fehler beim Abrufen der Dateien.');
+        console.error('Error fetching files:', error);
+        alert('Error fetching files.');
     }
 }
-
 
 function findClosestFolderElement(element) {
     while (element) {
@@ -64,7 +59,6 @@ function findClosestFolderElement(element) {
     return null;
 }
 
-
 async function displayFilesAndDirectories() {
     const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
     const dirs = await fetchUserDirectories(userId);
@@ -76,19 +70,17 @@ async function displayFilesAndDirectories() {
 
     console.log(files);
 
-    files.forEach(file =>  {
+    files.forEach(file => {
         const fileElement = document.createElement('li');
-        fileElement.innerHTML = file.filename.split('-').slice(1).join('-');;
+        fileElement.innerHTML = file.filename.split('-').slice(1).join('-');
         fileElement.dataset.ownId = file.id;
         fileElement.classList.add('directory-files');
-
 
         fileElement.addEventListener('click', async (element) => {
             const file = await getFileById(element.target.dataset.ownId);
             const filename = file.filename;
             
             const response = await fetch(`/get-file-from-server/${filename}`);
-
             const fileBlob = await response.blob();
 
             const FileFromSystem = {
@@ -100,7 +92,7 @@ async function displayFilesAndDirectories() {
 
             handleFiles([fileObject]);
 
-            console.log('Datei gespeichert:', FileFromSystem);
+            console.log('File saved:', FileFromSystem);
 
             showPopup("New file loaded: " + filename);
         });
@@ -108,10 +100,7 @@ async function displayFilesAndDirectories() {
         const dir = document.querySelector(`[data-own-id="${file.directoryId}"]`);
         if (dir) dir.querySelector('ul').appendChild(fileElement);
     });
-
 }
-
-
 
 async function traverseDirectories(dirs) {
     const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
@@ -126,7 +115,6 @@ async function traverseDirectories(dirs) {
         folder.dataset.parentId = dir.parentId;
         folder.dataset.ownId = dir.id;
 
-
         folder.addEventListener('click', (event) => {
             let elementsWithClass = directoryExplorer.querySelectorAll('.selected-folder');
 
@@ -134,11 +122,9 @@ async function traverseDirectories(dirs) {
                 element.classList.remove('selected-folder');
             });
 
-            
             let nearestFolder = findClosestFolderElement(event.target);
             nearestFolder.classList.add('selected-folder');
         });
-
 
         const folderContainer = document.createElement('details');
         folderContainer.setAttribute('open', true);
@@ -163,19 +149,18 @@ async function traverseDirectories(dirs) {
         });
     }
 
-    // Root-Verzeichnis erstellen und hinzufügen
+    // Create and add the root directory
     const rootElement = createFolderElement(root);
-    directoryExplorer.innerHTML = ''; // Leeren Sie das Verzeichnis, bevor Sie es neu aufbauen.
+    directoryExplorer.innerHTML = ''; // Clear the directory before rebuilding it.
     directoryExplorer.appendChild(rootElement.folder);
 
-    // Unterordner zum Root hinzufügen
+    // Add subfolders to the root
     appendChildren(rootElement.folder.querySelector('ul'), root);
 }
 
 function getDirectoriesByParentId(parentDir, dirs) {
     return dirs.filter(dir => dir.parentId === parentDir.id);
 }
-
 
 document.addEventListener('mousemove', (event) => {
     directoryBtn.style.top = -50 + event.clientY + "px";
@@ -190,7 +175,7 @@ directoryHitboxBtn.addEventListener("mouseleave", (event) => {
 });
 
 directoryBtn.addEventListener("click", (event) => {
-    if(directory.style.width == "var(--directorySizeOpen)"){
+    if (directory.style.width == "var(--directorySizeOpen)") {
         directory.style.width = "var(--directorySizeClose)";
         directoryBtn.style.left = "2.5em";
         directoryHitboxBtn.style.width = "var(--directoryHitboxSizeClose)";
@@ -207,15 +192,13 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
         return;
     }
 
-    const folderName = prompt("Gib den Namen des neuen Ordners ein:");
+    const folderName = prompt("Enter the name of the new folder:");
     if (folderName) {
         try {
             const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
-            
-            const root = await getRootByUserId(userId); // Abrufen des Root-Ordners
+            const root = await getRootByUserId(userId); // Get the root folder
 
             let elementsWithClass = directoryExplorer.querySelectorAll('.selected-folder')[0];
-
             let parent = root.id;
 
             if (elementsWithClass) parent = elementsWithClass.dataset.ownId;
@@ -234,24 +217,23 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
 
             if (response.ok) {
                 const folder = await response.json();
-                console.log('Ordner erfolgreich erstellt:', folder);
-                // Aktualisiere die Verzeichnisanzeige
+                console.log('Folder successfully created:', folder);
+                // Update the directory display
                 displayFilesAndDirectories();
             } else {
-                alert('Fehler beim Erstellen des Ordners.');
+                alert('Error creating folder.');
             }
         } catch (error) {
-            console.error('Fehler beim Erstellen des Ordners:', error);
-            alert('Fehler beim Erstellen des Ordners.');
+            console.error('Error creating folder:', error);
+            alert('Error creating folder.');
         }
     }
 });
 
-
 directoryActionsAddFile.addEventListener("click", async (event) => { 
     let filename = document.getElementById('settings-meta-filename');
     let metadata = document.getElementById('settings-meta');
-    const fileCreateTime  = document.getElementById('settings-info-file-created-value');
+    const fileCreateTime = document.getElementById('settings-info-file-created-value');
     const doc = document.getElementById('document-doc');
     
     let today = new Date();
@@ -276,7 +258,7 @@ directoryActionsAddFile.addEventListener("click", async (event) => {
 
     if (elementsWithClass) parent = elementsWithClass.dataset.ownId;
 
-    const newFilename = prompt("Gib den Namen des neuen Ordners ein:");
+    const newFilename = prompt("Enter the name of the new file:");
 
     try {
         const response = await fetch('/create-empty-file', {
@@ -288,18 +270,16 @@ directoryActionsAddFile.addEventListener("click", async (event) => {
         });
 
         if (!response.ok) {
-            throw new Error('Fehler beim Erstellen der Datei.');
+            throw new Error('Error creating file.');
         }
 
         showPopup("New File Created");
     } catch (error) {
-        console.error('Fehler beim Erstellen der Datei:', error);
+        console.error('Error creating file:', error);
         showPopup("Error: Could not create file.");
     }
 
-
     showPopup("New File Created");
-
 });
 
 directoryActionsUpload.addEventListener("click", (event) => { 
@@ -316,7 +296,7 @@ directoryActionsFileInput.addEventListener('change', async () => {
     const formData = new FormData();
     formData.append('file', directoryActionsFileInput.files[0]);
 
-    // Korrektur: Abrufen des ersten Elements direkt
+    // Correction: Get the first element directly
     const elementWithClass = directoryExplorer.querySelector('.selected-folder');
     const parentId = elementWithClass ? elementWithClass.dataset.ownId : null;
 
@@ -333,13 +313,13 @@ directoryActionsFileInput.addEventListener('change', async () => {
 
         if (response.ok) {
             const message = await response.text();
-            alert(`Datei erfolgreich hochgeladen: ${directoryActionsFileInput.files[0].name}`);
+            alert(`File successfully uploaded: ${directoryActionsFileInput.files[0].name}`);
         } else {
-            alert('Fehler beim Hochladen der Datei.');
+            alert('Error uploading file.');
         }
     } catch (error) {
-        console.error('Fehler beim Hochladen:', error);
-        alert('Fehler beim Hochladen der Datei.');
+        console.error('Error uploading:', error);
+        alert('Error uploading file.');
     }
 
     displayFilesAndDirectories();
