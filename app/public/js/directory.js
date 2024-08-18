@@ -82,9 +82,28 @@ async function displayFilesAndDirectories() {
         fileElement.dataset.ownId = file.id;
         fileElement.classList.add('directory-files');
 
+
+        fileElement.addEventListener('click', async (element) => {
+            const file = await getFileById(element.target.dataset.ownId);
+            const filename = file.filename;
+            
+            const response = await fetch(`/get-file-from-server/${filename}`);
+
+            const fileBlob = await response.blob();
+
+            const FileFromSystem = {
+                blob: fileBlob,
+                filename: filename 
+            };
+
+            const fileObject = new File([FileFromSystem.blob], FileFromSystem.filename, { type: FileFromSystem.blob.type });
+
+            handleFiles([fileObject]);
+
+            console.log('Datei gespeichert:', FileFromSystem);
+        });
+
         const dir = document.querySelector(`[data-own-id="${file.directoryId}"]`);
-
-
         if (dir) dir.querySelector('ul').appendChild(fileElement);
     });
 

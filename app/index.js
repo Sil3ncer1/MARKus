@@ -139,6 +139,22 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 
+
+app.get('/get-file-from-server/:filename', async (req, res) => {
+  try {
+      const filename = req.params.filename;
+
+      const filePath = path.join(__dirname, 'database', 'uploads', filename);
+
+      res.sendFile(filePath);
+  } catch (error) {
+      console.error('Fehler beim Abrufen der Datei:', error);
+      res.status(500).send('Fehler beim Abrufen der Datei');
+  }
+});
+
+
+
 app.get('/getFiles', async (req, res) => {
   const userId = req.query.userId;
 
@@ -350,6 +366,37 @@ app.get('/getRootByUserId', async (req, res) => {
 
       // Root-Verzeichnis gefunden, sende es zurück
       res.json(root);
+  } catch (error) {
+      console.error('Fehler beim Abrufen des Root-Verzeichnisses:', error);
+      res.status(500).send('Fehler beim Abrufen des Root-Verzeichnisses.');
+  }
+});
+
+
+app.get('/getFileById', async (req, res) => {
+  const { ownId } = req.query; // Benutzer-ID als Query-Parameter erhalten
+
+  console.log("id: " + ownId);
+
+  if (!ownId) {
+      return res.status(400).send('userId fehlt.');
+  }
+
+
+  try {
+      // Suche das Root-Verzeichnis anhand der userId und parentId null
+      const file = await File.findOne({
+          where: {
+            id: ownId
+          }
+      });
+
+      if (!file) {
+          return res.status(404).send('Root-Verzeichnis nicht gefunden.');
+      }
+
+      // Root-Verzeichnis gefunden, sende es zurück
+      res.json(file);
   } catch (error) {
       console.error('Fehler beim Abrufen des Root-Verzeichnisses:', error);
       res.status(500).send('Fehler beim Abrufen des Root-Verzeichnisses.');

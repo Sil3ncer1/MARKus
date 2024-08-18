@@ -87,3 +87,19 @@ async function getRootByUserId(userId) {
         throw error; // Weiterleiten des Fehlers
     }
 }
+
+async function getFileById(id) {
+    try {
+        const response = await fetch(`/getFileById?ownId=${encodeURIComponent(id)}`);
+
+        if (!response.ok) {
+            throw new Error('Fehler beim Abrufen des Root-Verzeichnisses');
+        }
+
+        const data = await response.json();
+        return data; // Gibt das Root-Verzeichnis zurück
+    } catch (error) {
+        console.error('Fehler beim Abrufen des Root-Verzeichnisses:', error);
+        throw error; // Weiterleiten des Fehlers
+    }
+}
