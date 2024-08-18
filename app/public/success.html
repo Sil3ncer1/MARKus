@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Success</title>
+    <script>
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const accessToken = params.get('accessToken');
+
+            if (accessToken) {
+                localStorage.setItem('accessToken', accessToken);
+                window.location.href = '/';
+            } else {
+                alert('Fehler beim Speichern des Tokens');
+            }
+        };
+    </script>
+</head>
+<body>
+</body>
+</html>
