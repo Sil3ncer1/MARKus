@@ -4,7 +4,7 @@ const loginButton = document.getElementById('sidebar-github-login');
 const logoutButton = document.getElementById('sidebar-github-logout');
 
 let LOGGED_IN = false;
-let USER_ID = "";
+let USED_ID = "";
 
 loginButton.addEventListener('click', e => loginWithGitHub());
 logoutButton.addEventListener('click', e => logoutFromGitHub());
@@ -12,6 +12,7 @@ logoutButton.addEventListener('click', e => logoutFromGitHub());
 function loginWithGitHub() {
     window.location.assign('https://github.com/login/oauth/authorize?client_id=' + CLIENT_ID);
     console.log('login');
+
 }
 
 function logoutFromGitHub() {
@@ -41,6 +42,7 @@ window.onload = async function() {
                 LOGGED_IN = true;
             } else {
                 localStorage.removeItem('accessToken');
+                
                 console.log('Token is invalid, please log in again.');
             }
         } catch (error) {
@@ -51,6 +53,7 @@ window.onload = async function() {
         LOGGED_IN = false;
     }
 };
+
 
 async function getUserIdByToken(accessToken) {
     try {
@@ -70,7 +73,7 @@ async function getUserIdByToken(accessToken) {
 
 async function getRootByUserId(userId) {
     try {
-        // Fetch the root directory by userId
+        // Abrufen des Root-Verzeichnisses anhand der userId
         const response = await fetch(`/getRootByUserId?userId=${encodeURIComponent(userId)}`);
 
         if (!response.ok) {

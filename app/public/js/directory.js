@@ -8,20 +8,23 @@ const directoryExplorer = document.getElementById('directory-explorer');
 const directoryActionsAddFolder = document.getElementById('directory-actions-add-folder');
 const directoryActionsAddFile = document.getElementById('directory-actions-add-file');
 const directoryActionsUpload = document.getElementById('directory-actions-upload');
-const directoryActionsFileInput = document.getElementById('directory-actions-file-input');
+const directoryActionsFileInput= document.getElementById('directory-actions-file-input');
+
 
 document.addEventListener('DOMContentLoaded', async () => {  
     displayFilesAndDirectories();
 });
 
+
+
 async function fetchUserDirectories(userId) {
     try {
         const response = await fetch(`/getDirs?userId=${userId}`);
-  
+
         if (!response.ok) {
             throw new Error('Error fetching directories');
         }
-  
+
         const directories = await response.json();
         console.log('Directories:', directories);
         return directories;
@@ -30,6 +33,7 @@ async function fetchUserDirectories(userId) {
         alert('Error fetching directories.');
     }
 }
+
 
 async function fetchUserFiles(userId) {
     try {
@@ -40,13 +44,14 @@ async function fetchUserFiles(userId) {
         }
     
         const files = await response.json();
-        console.log('Files:', files);
+        console.log('Dateien:', files);
         return files;
     } catch (error) {
         console.error('Error fetching files:', error);
         alert('Error fetching files.');
     }
 }
+
 
 function findClosestFolderElement(element) {
     while (element) {
@@ -59,6 +64,7 @@ function findClosestFolderElement(element) {
     return null;
 }
 
+
 async function displayFilesAndDirectories() {
     const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
     const dirs = await fetchUserDirectories(userId);
@@ -70,17 +76,19 @@ async function displayFilesAndDirectories() {
 
     console.log(files);
 
-    files.forEach(file => {
+    files.forEach(file =>  {
         const fileElement = document.createElement('li');
-        fileElement.innerHTML = file.filename.split('-').slice(1).join('-');
+        fileElement.innerHTML = file.filename.split('-').slice(1).join('-');;
         fileElement.dataset.ownId = file.id;
         fileElement.classList.add('directory-files');
+
 
         fileElement.addEventListener('click', async (element) => {
             const file = await getFileById(element.target.dataset.ownId);
             const filename = file.filename;
             
             const response = await fetch(`/get-file-from-server/${filename}`);
+
             const fileBlob = await response.blob();
 
             const FileFromSystem = {
@@ -100,7 +108,10 @@ async function displayFilesAndDirectories() {
         const dir = document.querySelector(`[data-own-id="${file.directoryId}"]`);
         if (dir) dir.querySelector('ul').appendChild(fileElement);
     });
+
 }
+
+
 
 async function traverseDirectories(dirs) {
     const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
@@ -115,6 +126,7 @@ async function traverseDirectories(dirs) {
         folder.dataset.parentId = dir.parentId;
         folder.dataset.ownId = dir.id;
 
+
         folder.addEventListener('click', (event) => {
             let elementsWithClass = directoryExplorer.querySelectorAll('.selected-folder');
 
@@ -122,9 +134,11 @@ async function traverseDirectories(dirs) {
                 element.classList.remove('selected-folder');
             });
 
+            
             let nearestFolder = findClosestFolderElement(event.target);
             nearestFolder.classList.add('selected-folder');
         });
+
 
         const folderContainer = document.createElement('details');
         folderContainer.setAttribute('open', true);
@@ -162,6 +176,7 @@ function getDirectoriesByParentId(parentDir, dirs) {
     return dirs.filter(dir => dir.parentId === parentDir.id);
 }
 
+
 document.addEventListener('mousemove', (event) => {
     directoryBtn.style.top = -50 + event.clientY + "px";
 });
@@ -175,7 +190,7 @@ directoryHitboxBtn.addEventListener("mouseleave", (event) => {
 });
 
 directoryBtn.addEventListener("click", (event) => {
-    if (directory.style.width == "var(--directorySizeOpen)") {
+    if(directory.style.width == "var(--directorySizeOpen)"){
         directory.style.width = "var(--directorySizeClose)";
         directoryBtn.style.left = "2.5em";
         directoryHitboxBtn.style.width = "var(--directoryHitboxSizeClose)";
@@ -196,9 +211,11 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
     if (folderName) {
         try {
             const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
-            const root = await getRootByUserId(userId); // Get the root folder
+            
+            const root = await getRootByUserId(userId); 
 
             let elementsWithClass = directoryExplorer.querySelectorAll('.selected-folder')[0];
+
             let parent = root.id;
 
             if (elementsWithClass) parent = elementsWithClass.dataset.ownId;
@@ -218,7 +235,7 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
             if (response.ok) {
                 const folder = await response.json();
                 console.log('Folder successfully created:', folder);
-                // Update the directory display
+
                 displayFilesAndDirectories();
             } else {
                 alert('Error creating folder.');
@@ -230,10 +247,11 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
     }
 });
 
+
 directoryActionsAddFile.addEventListener("click", async (event) => { 
     let filename = document.getElementById('settings-meta-filename');
     let metadata = document.getElementById('settings-meta');
-    const fileCreateTime = document.getElementById('settings-info-file-created-value');
+    const fileCreateTime  = document.getElementById('settings-info-file-created-value');
     const doc = document.getElementById('document-doc');
     
     let today = new Date();
@@ -279,7 +297,10 @@ directoryActionsAddFile.addEventListener("click", async (event) => {
         showPopup("Error: Could not create file.");
     }
 
+    displayFilesAndDirectories();
+
     showPopup("New File Created");
+
 });
 
 directoryActionsUpload.addEventListener("click", (event) => { 
@@ -296,7 +317,7 @@ directoryActionsFileInput.addEventListener('change', async () => {
     const formData = new FormData();
     formData.append('file', directoryActionsFileInput.files[0]);
 
-    // Correction: Get the first element directly
+    // Korrektur: Abrufen des ersten Elements direkt
     const elementWithClass = directoryExplorer.querySelector('.selected-folder');
     const parentId = elementWithClass ? elementWithClass.dataset.ownId : null;
 
@@ -313,7 +334,7 @@ directoryActionsFileInput.addEventListener('change', async () => {
 
         if (response.ok) {
             const message = await response.text();
-            alert(`File successfully uploaded: ${directoryActionsFileInput.files[0].name}`);
+            showPopup(`File successfully uploaded: ${directoryActionsFileInput.files[0].name}`);
         } else {
             alert('Error uploading file.');
         }
