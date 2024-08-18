@@ -4,6 +4,7 @@ const RandExp = require('randexp');
 const markdownIt = require('markdown-it');
 const highlightJs = require('highlight.js');
 
+const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
 const multer = require('multer');
@@ -138,6 +139,36 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
+
+app.post('/create-empty-file', async (req, res) => {    
+  const userId = req.body.userId;
+  if (!userId) return res.status(400).send('Keine Benutzer-ID angegeben.');
+
+  const parentId = req.body.parentId;
+  if (!parentId) return res.status(400).send('Keine Parent-ID angegeben.');
+
+  const filename  = req.body.filename + '.md';
+  if (!filename) return res.status(400).send('Kein Dateiname angegeben.');
+  
+
+  const filePath = path.join(__dirname, 'database/uploads', filename);
+
+  fs.writeFile(filePath, '', (err) => {
+      if (err) {
+          console.error('Fehler beim Erstellen der Datei:', err);
+          return res.status(500).send('Fehler beim Erstellen der Datei.');
+      }
+      res.status(200).send('Datei erfolgreich erstellt.');
+  });
+
+  const file = await File.create({
+    filename: filename,
+    userId: userId,
+    directoryId: parentId 
+  });
+
+  console.log('File created:', file.toJSON());
+});
 
 
 app.get('/get-file-from-server/:filename', async (req, res) => {

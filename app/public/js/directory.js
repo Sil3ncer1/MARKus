@@ -101,6 +101,8 @@ async function displayFilesAndDirectories() {
             handleFiles([fileObject]);
 
             console.log('Datei gespeichert:', FileFromSystem);
+
+            showPopup("New file loaded: " + filename);
         });
 
         const dir = document.querySelector(`[data-own-id="${file.directoryId}"]`);
@@ -175,36 +177,6 @@ function getDirectoriesByParentId(parentDir, dirs) {
 }
 
 
-
-/*
-<li class="directory-folder">
-    <details open>
-        <summary>Folder 1</summary>
-        <ul>
-        <li class="directory-folder">
-            <details>
-            <summary>Folder 2</summary>
-            <ul>
-                <li class="directory-files">MD File 1</li>
-                <li class="directory-files">MD File 2</li>
-            </ul>
-            </details>
-        </li>
-        <li class="directory-folder">
-            <details>
-            <summary>Folder 3</summary>
-            <ul>
-                <li class="directory-files">JPG File 1</li>
-                <li class="directory-files">PNG File 23456789/li>
-            </ul>
-            </details>
-        </li>
-        </ul>
-    </details>
-</li>
-<li class="directory-files">MD File 3</li>
-*/
-
 document.addEventListener('mousemove', (event) => {
     directoryBtn.style.top = -50 + event.clientY + "px";
 });
@@ -244,8 +216,6 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
 
             let elementsWithClass = directoryExplorer.querySelectorAll('.selected-folder')[0];
 
-            console.log(elementsWithClass);
-
             let parent = root.id;
 
             if (elementsWithClass) parent = elementsWithClass.dataset.ownId;
@@ -278,8 +248,58 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
 });
 
 
-directoryActionsAddFile.addEventListener("click", (event) => { 
+directoryActionsAddFile.addEventListener("click", async (event) => { 
+    let filename = document.getElementById('settings-meta-filename');
+    let metadata = document.getElementById('settings-meta');
+    const fileCreateTime  = document.getElementById('settings-info-file-created-value');
+    const doc = document.getElementById('document-doc');
     
+    let today = new Date();
+    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' '+ today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    fileCreateTime.innerHTML = date;
+
+    filename.value = '';
+    metadata.value = '';
+
+    while (doc.firstChild){
+        if(socket) removeElement(doc.firstChild.dataset.id);
+        doc.firstChild.remove();
+    }
+
+    showEmptyLineContainer();
+
+    const userId = await getUserIdByToken(localStorage.getItem("accessToken"));            
+    const root = await getRootByUserId(userId);
+
+    let elementsWithClass = directoryExplorer.querySelectorAll('.selected-folder')[0];
+    let parent = root.id;
+
+    if (elementsWithClass) parent = elementsWithClass.dataset.ownId;
+
+    const newFilename = prompt("Gib den Namen des neuen Ordners ein:");
+
+    try {
+        const response = await fetch('/create-empty-file', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ filename: newFilename, parentId: parent, userId: userId }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Fehler beim Erstellen der Datei.');
+        }
+
+        showPopup("New File Created");
+    } catch (error) {
+        console.error('Fehler beim Erstellen der Datei:', error);
+        showPopup("Error: Could not create file.");
+    }
+
+
+    showPopup("New File Created");
+
 });
 
 directoryActionsUpload.addEventListener("click", (event) => { 
