@@ -162,6 +162,56 @@
 }
 
 
+
+#directory-options-menu {
+    display: none;
+    position: absolute;
+    
+    width: 12%;
+
+    background-color: var(--secondaryColor);
+    color: var(--menuTextColor);
+
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+    border-radius: .3rem;
+
+
+    padding: 1rem;
+    z-index: 1000;
+}
+
+
+#directory-options-menu ul{
+    list-style: none;
+    font-size: 1.2rem;
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+
+#directory-options-menu ul li {
+    margin:  0;
+    padding: .4rem .4rem;
+    display: flex;
+    border-radius: .5rem;
+
+}
+
+#directory-options-menu ul li img{
+    width: 1.5rem;
+    margin-right: 1rem;
+    display: flex;
+    align-self: center;
+    justify-self: center;
+}
+
+#directory-options-menu ul li:hover {
+    background-color: var(--menuHighlight);
+}
+
+
 @media screen and (max-width:1000px) {
     #directory-button-hitbox {
         --directoryHitboxSize: 25rem;
