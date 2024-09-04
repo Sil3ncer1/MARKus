@@ -65,8 +65,6 @@ function findClosestFolderElement(element) {
 }
 
 
-let ACTIVE_FILE = null;
-
 async function displayFilesAndDirectories() {
     const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
     const dirs = await fetchUserDirectories(userId);
@@ -84,18 +82,15 @@ async function displayFilesAndDirectories() {
         fileElement.dataset.ownId = file.id;
         fileElement.classList.add('directory-files');
 
-        
+
         fileElement.addEventListener('click', async (element) => {
             const file = await getFileById(element.target.dataset.ownId);
             const filename = file.filename;
-            ACTIVE_FILE = element.target.dataset.ownId;
             
-            console.log(ACTIVE_FILE);
-
             const response = await fetch(`/get-file-from-server/${filename}`);
-            
+
             const fileBlob = await response.blob();
-            
+
             const FileFromSystem = {
                 blob: fileBlob,
                 filename: filename 
@@ -143,6 +138,7 @@ async function traverseDirectories(dirs) {
             let nearestFolder = findClosestFolderElement(event.target);
             nearestFolder.classList.add('selected-folder');
         });
+
 
         const folderContainer = document.createElement('details');
         folderContainer.setAttribute('open', true);
@@ -211,8 +207,7 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
         return;
     }
 
-    const folderName = prompt('Folder Name: ');
-
+    const folderName = prompt("Enter the name of the new folder:");
     if (folderName) {
         try {
             const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
@@ -350,127 +345,3 @@ directoryActionsFileInput.addEventListener('change', async () => {
 
     displayFilesAndDirectories();
 });
-
-
-
-
-
-
-
-
-
-
-
-// OPTIONS-MENU
-
-directoryExplorer.addEventListener('contextmenu', event => {
-    if (!window.getSelection().toString()) {
-        event.preventDefault();
-        setOptionsMenu(event);
-    }
-});
-
-
-document.addEventListener('click', event => {
-    document.getElementById('directory-options-menu').style.display = 'none';
-});
-
-let selectedOptionsElement = null;
-let isSelectedOptionsElementFolder = false; 
-
-function setOptionsMenu(event) {
-    let clickedElement = event.target;
-    isSelectedOptionsElementFolder = false;
-
-
-    if (!clickedElement.classList.contains('directory-files'))  {
-        clickedElement = findClosestFolderElement(clickedElement);
-        isSelectedOptionsElementFolder = true;
-    }
-    
-    selectedOptionsElement = clickedElement;
-
-    let optionsMenu = document.getElementById('directory-options-menu');
-    optionsMenu.style.left = event.pageX + 'px';
-    optionsMenu.style.top = event.pageY + 'px';
-    optionsMenu.style.display = 'block';
-}
-
-
-
-function  addEventListenerToOptionsMenu() {
-    document.getElementById('directory-directory-options-menu-delete').addEventListener('click', async event => {
-        if (selectedOptionsElement == null) return;
-
-        console.log(selectedOptionsElement);
-
-        console.log(selectedOptionsElement.dataset.ownId + " folder: " + isSelectedOptionsElementFolder);
-
-        const delteElement = confirm("are you sure you want to delete this Objekt?");
-
-        if (!delteElement) return;
-
-        const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
-        const objectID = selectedOptionsElement.dataset.ownId;
-
-
-        console.log("USER: " + userId + " FOLDER: " + objectID);
-
-        if (isSelectedOptionsElementFolder) {
-
-            const root = await getRootByUserId(userId);
-            if (objectID == root.id) {
-                showPopup("You cant delte the Root-Folder");
-                return;
-            }
-
-            try {
-                const response = await fetch('/delete-folder', {
-                    method: 'POST',
-                    headers: {
-                    'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ userId, objectID }),
-                });
-            
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('Folder deleted:', data);
-                    showPopup("Folder deleted!");
-                } else {
-                    console.error('Couldnt delete Folder:', response.statusText);
-                    showPopup("Couldnt delete Folder!");
-                }
-            } catch (error) {
-                console.error('Fehler:', error);
-            }
-        } else {
-            try {
-                const response = await fetch('/delete-file', {
-                    method: 'POST',
-                    headers: {
-                    'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ userId, objectID }),
-                });
-            
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('File deleted:', data);
-                    showPopup("File deleted!");
-
-                } else {
-                    console.error('Couldnt delete File:', response.statusText);
-                    showPopup("Couldnt delete File!");
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        displayFilesAndDirectories();
-
-    });
-}
-
-addEventListenerToOptionsMenu();

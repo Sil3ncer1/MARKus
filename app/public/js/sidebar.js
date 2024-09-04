@@ -148,12 +148,6 @@ saveBtn.addEventListener('click', event => {
             documentText += firstElementChild.outerHTML + "\n";
     }
 
-
-    if (ACTIVE_FILE != null) {
-        // TODO: SAVE FILES
-    }
-
-
     localStorage.setItem('documentText', documentText);
     showPopup("Document Saved to the browser");
 });

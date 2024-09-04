@@ -226,10 +226,9 @@ app.post('/create-empty-file', async (req, res) => {
   const parentId = req.body.parentId;
   if (!parentId) return res.status(400).send('No parent id provided.');
 
-  const filename = Date.now() + '-' + req.body.filename + '.md';
-  if (!filename) return res.status(400).send('No filename provided.');
+  const filename  = req.body.filename + '.md';
+  if (!req.file) return res.status(400).send('No filename provided.');
   
-
 
   const filePath = path.join(__dirname, 'database/uploads', filename);
 
@@ -352,52 +351,7 @@ app.post('/create-folder', async (req, res) => {
 });
 
 
-app.post('/delete-folder', async (req, res) => {
-  const { objectID, userId } = req.body;
 
-  if (!objectID || !userId) {
-    return res.status(400).send('Folder ID oder Benutzer-ID fehlt.');
-  }
-
-  try {
-    const deleteFolderRecursively = async (objectID) => {
-      const subfolders = await Directory.findAll({ where: { parentId: objectID } });
-
-      for (const subfolder of subfolders) {
-        await deleteFolderRecursively(subfolder.id);
-      }
-
-      await File.destroy({ where: { id: objectID } });
-
-      await Directory.destroy({ where: { id: objectID } });
-    };
-
-    await deleteFolderRecursively(objectID);
-
-    res.status(200).send('Ordner und alle Unterelemente erfolgreich gelöscht.');
-  } catch (error) {
-    console.error('Fehler beim Löschen des Ordners:', error);
-    res.status(500).send('Fehler beim Löschen des Ordners.');
-  }
-});
-
-app.post('/delete-file', async (req, res) => {
-  const { objectID, userId } = req.body;
-
-  if (!objectID || !userId) {
-    return res.status(400).send('Folder ID oder Benutzer-ID fehlt.');
-  }
-
-  try {
-
-    await File.destroy({ where: { id: objectID } });
-
-    res.status(200).send('Ordner und alle Unterelemente erfolgreich gelöscht.');
-  } catch (error) {
-    console.error('Fehler beim Löschen des Ordners:', error);
-    res.status(500).send('Fehler beim Löschen des Ordners.');
-  }
-});
 
 
 
