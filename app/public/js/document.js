@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   enableDragAndDropFiles();
   addEventListenersToContextMenu();
-
   
   loadSnippetCards();
 });
