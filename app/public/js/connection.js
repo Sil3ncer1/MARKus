@@ -59,21 +59,30 @@ collabOpenRoomBtn.addEventListener('click', e => {
     });
 
     socket.on('element-swapped', change => {
-        const changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
-        const changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
+        let changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
+        let changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
+
         if(changedElement1 == changedElement2)
             return;
 
-        changedElement1.classList.remove('document-element-blocked');
+        // Ersetze den Inhalt der Elemente
         changedElement1.outerHTML = change.content2;
-
-        changedElement2.classList.remove('document-element-blocked');
         changedElement2.outerHTML = change.content1;
 
-        
-        changedElement1.classList.remove("document-editable-hover-drop");
-        changedElement2.classList.remove("document-editable-hover-drop");
+        // Wähle die neuen DOM-Elemente aus, da sich die Referenzen geändert haben
+        changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
+        changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
+
+        // Entferne die Klassen von den neuen Elementen
+        if (changedElement1) {
+            changedElement1.classList.remove('document-element-blocked', 'document-editable-hover-drop');
+        }
+        if (changedElement2) {
+            changedElement2.classList.remove('document-element-blocked', 'document-editable-hover-drop');
+        }
+
         enableDragAndDrop();
+
     });
 
     socket.on('element-removed', elementID => {
@@ -158,20 +167,29 @@ collabJoinRoomBtn.addEventListener('click', e => {
 
         
         socket.on('element-swapped', change => {
-            const changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
-            const changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
+            let changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
+            let changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
+    
             if(changedElement1 == changedElement2)
                 return;
-
-            changedElement1.classList.remove('document-element-blocked');
+    
+    
+            // Ersetze den Inhalt der Elemente
             changedElement1.outerHTML = change.content2;
-
-            changedElement2.classList.remove('document-element-blocked');
             changedElement2.outerHTML = change.content1;
-
-            
-            changedElement1.classList.remove("document-editable-hover-drop");
-            changedElement2.classList.remove("document-editable-hover-drop");
+    
+            // Wähle die neuen DOM-Elemente aus, da sich die Referenzen geändert haben
+            changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
+            changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
+    
+            // Entferne die Klassen von den neuen Elementen
+            if (changedElement1) {
+                changedElement1.classList.remove('document-element-blocked', 'document-editable-hover-drop');
+            }
+            if (changedElement2) {
+                changedElement2.classList.remove('document-element-blocked', 'document-editable-hover-drop');
+            }
+    
             enableDragAndDrop();
         });
 

@@ -723,6 +723,7 @@ function enableDragAndDrop() {
 
     element.addEventListener('dragstart', event => {
       draggedElement = element.parentNode.firstElementChild;
+      blockEditedElement(element.parentNode.dataset.id);
       let footer = document.getElementById('footer');
       footer.style.bottom = -2.5 + "rem"
       // Set data for the drag-and-drop operation
