@@ -61,7 +61,9 @@ collabOpenRoomBtn.addEventListener('click', e => {
     socket.on('element-swapped', change => {
         let changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
         let changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
-
+        changedElement1.classList.remove('document-element-blocked', 'document-editable-hover-drop');
+        changedElement2.classList.remove('document-element-blocked', 'document-editable-hover-drop');
+        
         if(changedElement1 == changedElement2)
             return;
 
@@ -169,10 +171,11 @@ collabJoinRoomBtn.addEventListener('click', e => {
         socket.on('element-swapped', change => {
             let changedElement1 = document.querySelector('[data-id="' + change.elementID1 + '"]');
             let changedElement2 = document.querySelector('[data-id="' + change.elementID2 + '"]');
-    
+            changedElement1.classList.remove('document-element-blocked', 'document-editable-hover-drop');
+            changedElement2.classList.remove('document-element-blocked', 'document-editable-hover-drop');
+
             if(changedElement1 == changedElement2)
                 return;
-    
     
             // Ersetze den Inhalt der Elemente
             changedElement1.outerHTML = change.content2;
