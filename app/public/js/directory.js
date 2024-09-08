@@ -9,6 +9,8 @@ const directoryActionsAddFolder = document.getElementById('directory-actions-add
 const directoryActionsAddFile = document.getElementById('directory-actions-add-file');
 const directoryActionsUpload = document.getElementById('directory-actions-upload');
 const directoryActionsFileInput= document.getElementById('directory-actions-file-input');
+const directoryActionsFolderUpload = document.getElementById('directory-actions-folder-upload');
+const directoryActionsFolderInput= document.getElementById('directory-actions-folder-input');
 
 
 document.addEventListener('DOMContentLoaded', async () => {  
@@ -236,7 +238,6 @@ directoryActionsAddFolder.addEventListener("click", async (event) => {
                     parentId: parent 
                 })
             });
-
             if (response.ok) {
                 const folder = await response.json();
                 console.log('Folder successfully created:', folder);
@@ -353,13 +354,135 @@ directoryActionsFileInput.addEventListener('change', async () => {
 
 
 
+//MARK:Folder
+// Event listener for folder upload button
+directoryActionsFolderUpload.addEventListener("click", (event) => {
+    if (LOGGED_IN === false && localStorage.getItem("accessToken")) {
+        showPopup("You must be logged in");
+        return;
+    }
+    directoryActionsFolderInput.click();
+});
+
+// Event listener for file selection
+directoryActionsFolderInput.addEventListener('change', async () => {
+    if (directoryActionsFolderInput.files.length <= 0) return;
+
+    const files = Array.from(directoryActionsFolderInput.files);
+    const filePaths = files.map(file => file.webkitRelativePath);
+    const tree = {};
+
+    const addPath = (path, tree) => {
+        const createChild = (name) => ({
+            name,
+            children: []
+        });
+
+        const parts = path.split("/");
+
+        if (!tree.name) {
+            Object.assign(tree, createChild(parts[0]));
+        }
+
+        if (tree.name !== parts[0]) {
+            throw new Error(`Root folder is not "${tree.name}"`);
+        }
+        parts.shift();
+
+        parts.reduce((current, p) => {
+            const child = current.children.find((child) => child.name === p);
+            if (child) {
+                return child;
+            }
+
+            const newChild = createChild(p);
+            current.children.push(newChild);
+            return newChild;
+        }, tree);
+    };
+
+    filePaths.forEach((path) => addPath(path, tree));
+
+    const userId = await getUserIdByToken(localStorage.getItem("accessToken"));     
+    const root = await getRootByUserId(userId); 
+    let elementsWithClass = directoryExplorer.querySelectorAll('.selected-folder')[0];
+    let parent = root.id;
+    if (elementsWithClass) parent = elementsWithClass.dataset.ownId;
+    await processTree(tree,parent);
+    displayFilesAndDirectories();
+});
 
 
+const createFolder = async (folder, parentId) => {
+    try {
+        const response = await fetch('/create-folder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: folder.name,
+                userId: await getUserIdByToken(localStorage.getItem("accessToken")),
+                parentId: parentId
+            })
+        });
 
+        if (response.ok) {
+            const newFolder = await response.json();
+            return newFolder.id;
+        } else {
+            throw new Error('Error creating folder.');
+        }
+    } catch (error) {
+        console.error('Error creating folder:', error);
+        alert('Error creating folder.');
+    }
+};
 
+const uploadFile = async (file, parentId) => {
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('parentId', parentId);
+        formData.append('userId', await getUserIdByToken(localStorage.getItem("accessToken")));
 
+        const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
 
+        if (response.ok) {
+            const message = await response.text();
+            showPopup(`File successfully uploaded: ${file.name}`);
+        } else {
+            throw new Error('Error uploading file.');
+        }
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Error uploading file.');
+    }
+};
 
+const processTree = async (tree, parentId = null) => {
+    const queue = [{ node: tree, parentId }];
+    let first = true;
+    while (queue.length) {
+        const { node, parentId } = queue.shift();
+
+        if ( first != true && node.name.includes('.') && node.name.lastIndexOf('.') > node.name.lastIndexOf('/') ) {
+            // Handle file
+            const file = Array.from(directoryActionsFolderInput.files).find(file => file.webkitRelativePath.endsWith(node.name));
+            if (file) {
+                await uploadFile(file, parentId);
+            }
+        } else {
+            // Handle folder
+            first = false;
+            const newParentId = await createFolder(node, parentId);
+            node.children.forEach(child => queue.push({ node: child, parentId: newParentId }));
+        }
+    }
+};
 
 // OPTIONS-MENU
 

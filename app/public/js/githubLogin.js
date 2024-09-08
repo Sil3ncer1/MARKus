@@ -1,4 +1,4 @@
-const CLIENT_ID = "Ov23liTsBVLk8CrUWAyW";
+const CLIENT_ID = "Ov23liQ4tifSFGdTzTeT";
 
 const loginButton = document.getElementById('sidebar-github-login');
 const logoutButton = document.getElementById('sidebar-github-logout');

@@ -135,8 +135,9 @@
 #directory-actions {
     display: flex;
     list-style-type: none;
-    width: 95%;
-    justify-content: right;
+    width: 100%;
+    justify-content: left;
+    align-items: center;
 }
 
 #directory-actions li {
@@ -148,7 +149,6 @@
     justify-content: center;
     transition: 200ms ease-in-out;
     cursor: pointer;
-    margin: 0 .33rem;
     padding: .25rem;
 }
 

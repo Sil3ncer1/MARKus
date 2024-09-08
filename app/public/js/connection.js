@@ -119,8 +119,19 @@ collabOpenRoomBtn.addEventListener('click', e => {
 
 
 collabRoomIDText.addEventListener('click', e => {
-    // Copy the text inside the text field
-    navigator.clipboard.writeText(collabRoomID.innerText);
+    // Fallback-Methode für HTTP-Seiten
+    let tempInput = document.createElement('textarea');
+    tempInput.value = collabRoomID.innerText;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    try {
+        document.execCommand('copy');
+        showPopup("Code copied!");
+    } catch (err) {
+        showPopup('Unable to copy text');
+    }
+    document.body.removeChild(tempInput);
+    
     showPopup("Code copied!");
 });
 
