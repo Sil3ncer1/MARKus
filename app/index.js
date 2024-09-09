@@ -385,17 +385,42 @@ app.post('/delete-file', async (req, res) => {
   const { objectID, userId } = req.body;
 
   if (!objectID || !userId) {
-    return res.status(400).send('Folder ID oder Benutzer-ID fehlt.');
+    return res.status(400).send('File ID oder Benutzer-ID fehlt.');
   }
 
   try {
+    // Finde die Datei in der Datenbank
+    const fileObject = await File.findOne({ where: { id: objectID, userId: userId } });
 
-    await File.destroy({ where: { id: objectID } });
+    if (!fileObject) {
+      return res.status(404).send('Datei nicht gefunden.');
+    }
 
-    res.status(200).send('Ordner und alle Unterelemente erfolgreich gelöscht.');
+    // Pfad zur Datei
+    const filePath = path.join(__dirname, 'database/uploads', fileObject.filename);
+
+    // Lösche die Datei vom Server
+    fs.unlink(filePath, async (err) => {
+      if (err) {
+        console.error('Fehler beim Löschen der Datei:', err);
+        return res.status(500).send('Fehler beim Löschen der Datei.');
+      }
+
+      try {
+        // Lösche das Objekt aus der Datenbank
+        await File.destroy({ where: { id: objectID } });
+
+        // Antwort senden, nachdem die Datei und der Datenbankeintrag gelöscht wurden
+        res.status(200).send('Datei und Datenbankeintrag erfolgreich gelöscht.');
+      } catch (dbError) {
+        console.error('Fehler beim Löschen des Datenbankeintrags:', dbError);
+        res.status(500).send('Fehler beim Löschen des Datenbankeintrags.');
+      }
+    });
+
   } catch (error) {
-    console.error('Fehler beim Löschen des Ordners:', error);
-    res.status(500).send('Fehler beim Löschen des Ordners.');
+    console.error('Fehler beim Löschen der Datei:', error);
+    res.status(500).send('Fehler beim Löschen der Datei.');
   }
 });
 
