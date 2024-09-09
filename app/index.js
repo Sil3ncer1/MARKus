@@ -425,6 +425,86 @@ app.post('/delete-file', async (req, res) => {
 });
 
 
+app.post('/rename-folder', async (req, res) => {
+  const { objectID, userId, newFilename } = req.body;
+
+  console.log(objectID);
+  console.log(userId);
+  console.log(newFilename);
+
+  // Check if all required fields are provided
+  if (!objectID || !userId || !newFilename) {
+    return res.status(400).json({ error: 'Folder ID, user ID, or new name is missing.' });
+  }
+
+  try {
+    // Find the folder in the database
+    const folder = await Directory.findOne({ where: { id: objectID, userId: userId } });
+
+    // Check if the folder exists
+    if (!folder) {
+      return res.status(404).json({ error: 'Folder not found.' });
+    }
+
+    // Update the folder name
+    folder.name = newFilename;
+    await folder.save();
+
+    // Send a JSON success response
+    res.status(200).json({ message: 'Folder name successfully updated.' });
+  } catch (error) {
+    console.error('Error renaming the folder:', error);
+    res.status(500).json({ error: 'Error renaming the folder.' });
+  }
+});
+
+
+
+app.post('/rename-file', async (req, res) => {
+  const { objectID, userId, newFilename } = req.body;
+
+  // Validate the input
+  if (!objectID || !userId || !newFilename) {
+    return res.status(400).json({ error: 'File ID, user ID, or new name is missing.' });
+  }
+
+  try {
+    // Find the file in the database
+    const fileObject = await File.findOne({ where: { id: objectID, userId: userId } });
+
+    // Check if the file exists
+    if (!fileObject) {
+      return res.status(404).json({ error: 'File not found.' });
+    }
+
+    // Extract the timestamp prefix from the existing filename
+    const timestampPrefix = fileObject.filename.split('-')[0];
+    const extension = path.extname(fileObject.filename);
+    const newFullFilename = `${timestampPrefix}-${newFilename}${extension}`;
+
+    // Define the old and new file paths
+    const oldFilePath = path.join(__dirname, 'database/uploads', fileObject.filename);
+    const newFilePath = path.join(__dirname, 'database/uploads', newFullFilename);
+
+    // Rename the file on the filesystem
+    fs.rename(oldFilePath, newFilePath, async (err) => {
+      if (err) {
+        console.error('Error renaming the file on the filesystem:', err);
+        return res.status(500).json({ error: 'Error renaming the file on the filesystem.' });
+      }
+
+      // Update the file name in the database
+      fileObject.filename = newFullFilename;
+      await fileObject.save();
+
+      // Send a JSON success response
+      res.status(200).json({ message: 'File successfully renamed.' });
+    });
+  } catch (error) {
+    console.error('Error renaming the file:', error);
+    res.status(500).json({ error: 'Error renaming the file.' });
+  }
+});
 
 
 

@@ -521,7 +521,7 @@ function setOptionsMenu(event) {
 
 
 
-function  addEventListenerToOptionsMenu() {
+function addEventListenerToOptionsMenu() {
     document.getElementById('directory-directory-options-menu-delete').addEventListener('click', async event => {
         if (selectedOptionsElement == null) return;
 
@@ -585,6 +585,75 @@ function  addEventListenerToOptionsMenu() {
                 } else {
                     console.error('Couldnt delete File:', response.statusText);
                     showPopup("Couldnt delete File!");
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        displayFilesAndDirectories();
+
+    });
+
+    document.getElementById('directory-directory-options-menu-rename').addEventListener('click', async event => {
+        console.log('rename');
+        if (selectedOptionsElement == null) return;
+        const newFilename = prompt("Enter the name of the new file:");
+
+        if (newFilename.trim() == "") {
+            showPopup("The new name cant be empty");
+            return;
+        }
+
+        const userId = await getUserIdByToken(localStorage.getItem("accessToken"));
+        const objectID = selectedOptionsElement.dataset.ownId;
+
+        if (isSelectedOptionsElementFolder) {
+
+            const root = await getRootByUserId(userId);
+            if (objectID == root.id) {
+                showPopup("You cant rename the Root-Folder");
+                return;
+            }
+
+            try {
+                const response = await fetch('/rename-folder', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId, objectID, newFilename }),
+                });
+            
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Folder renamed:', data);
+                    showPopup("Folder renamed!");
+                } else {
+                    console.error('Couldnt rename Folder:', response.statusText);
+                    showPopup("Couldnt rename Folder!");
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        } else {
+            try {
+                const response = await fetch('/rename-file', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId, objectID, newFilename }),
+                });
+            
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('File renamed:', data);
+                    showPopup("File renamed!");
+
+                } else {
+                    console.error('Couldnt rename File:', response.statusText);
+                    showPopup("Couldnt rename File!");
                 }
             } catch (error) {
                 console.error('Error:', error);

@@ -1178,7 +1178,7 @@ function addEventListenersToContextMenu() {
     focusedTextarea.style.height = "0px";
     focusedTextarea.value = modifiedText;
     focusedTextarea.style.height = focusedTextarea.scrollHeight + "px";
-    focusedTextarea.blur();
+    focusedTextarea.blur
     removeSelection();
   });
 }
