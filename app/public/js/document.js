@@ -482,8 +482,46 @@ function addEventListenersToTextArea(textarea, id = -1) {
       const children = Array.from(htmlObjects.children);
 
       const nextSibling = textcontainer.nextElementSibling;
+
+      const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
+      const dirs = await fetchUserDirectories(userId);
+      const files = await fetchUserFiles(userId);
+      
       for (const child of children) {
         const newTag = createHTMLElement(child.outerHTML, "document-editable", id);
+        const links = newTag.querySelectorAll('a');
+
+        links.forEach(link => {
+            link.addEventListener('click', async function(event) {
+              const href = link.getAttribute('href');
+                
+                // Check if the href is a relative URL (doesn't start with 'http', 'https', or '//')
+                const isRelative = !href.startsWith('http') && !href.startsWith('//');
+
+                if (isRelative) {
+
+                    event.preventDefault(); // Prevent default link action
+                    event.stopPropagation();
+                    const file = findFileByPath(href, dirs, files)
+                    const response = await fetch(`/get-file-from-server/${file.filename}`);
+                    const fileBlob = await response.blob();
+                    
+                    const FileFromSystem = {
+                        blob: fileBlob,
+                        filename: file.filename 
+                    };
+        
+                    const fileObject = new File([FileFromSystem.blob], FileFromSystem.filename, { type: FileFromSystem.blob.type });
+        
+                    handleFiles([fileObject]);
+
+                    console.log('File saved:', FileFromSystem);
+
+                    showPopup("New file loaded: " + file.filename);
+                }
+            });
+        });
+
         parentContainer.insertBefore(newTag, nextSibling);
         if(socket) documentChanged(newTag.dataset.id);
         if(id != -1) id = ElementID++;
@@ -522,6 +560,27 @@ function addEventListenersToTextArea(textarea, id = -1) {
       console.error(error);
     }
   });
+
+  function findFileByPath(path, dirs, files) {
+    const pathParts = path.split("/"); // Split the path into parts
+    const filename = pathParts.pop(); // Extract the filename (last part)
+    let currentDir = dirs.find(dir => dir.parentId === null); // Start from the root directory
+    console.log(currentDir)
+
+    // Traverse the directories based on the path
+    for (const part of pathParts) {
+        const nextDir = dirs.find(dir => dir.name === part && dir.parentId === currentDir.id);
+        if (!nextDir) {
+            return null; // Directory in the path doesn't exist
+        }
+        currentDir = nextDir;
+    }
+
+    // Now that we are in the correct directory, look for the file
+
+    const file = files.find(file => file.filename.endsWith(filename) && file.directoryId === currentDir.id);
+    return file ? file : null; // Return the file if found, otherwise null
+}
 
   textarea.addEventListener("input", () => {
     // fit text in textarea on change
