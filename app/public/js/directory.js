@@ -82,18 +82,21 @@ async function displayFilesAndDirectories() {
 
     files.forEach(file =>  {
         const fileElement = document.createElement('li');
-        fileElement.innerHTML = file.filename.split('-').slice(1).join('-');;
+        fileElement.innerHTML = file.filename.split('-').slice(1).join('-');
         fileElement.dataset.ownId = file.id;
         fileElement.classList.add('directory-files');
-
-        
+    
+        // Make the element draggable
+        fileElement.setAttribute('draggable', 'true');
+    
+        // Event for clicking on the file
         fileElement.addEventListener('click', async (element) => {
             const file = await getFileById(element.target.dataset.ownId);
             const filename = file.filename;
             ACTIVE_FILE = element.target.dataset.ownId;
             
             console.log(ACTIVE_FILE);
-
+    
             const response = await fetch(`/get-file-from-server/${filename}`);
             
             const fileBlob = await response.blob();
@@ -102,20 +105,69 @@ async function displayFilesAndDirectories() {
                 blob: fileBlob,
                 filename: filename 
             };
-
+    
             const fileObject = new File([FileFromSystem.blob], FileFromSystem.filename, { type: FileFromSystem.blob.type });
-
+    
             handleFiles([fileObject]);
-
+    
             console.log('File saved:', FileFromSystem);
-
+    
             showPopup("New file loaded: " + filename);
         });
 
+        fileElement.addEventListener('dragstart', (event) => {
+            event.dataTransfer.setData("text/plain", file.id);  // Transfer the file ID for later use
+            event.dataTransfer.effectAllowed = "move";  // Specify the allowed drag action
+        });
+        
+        // Allow the drop target to accept the drop
+        fileElement.addEventListener('dragover', (event) => {
+            event.preventDefault();  // Necessary to allow a drop
+            event.dataTransfer.dropEffect = "move";
+        });
+        
+        fileElement.addEventListener('drop', async (event) => {
+            event.preventDefault();
+            event.preventDefault();
+            folder = findClosestFolderElement(event.target)
+            // folder.classList.remove('drag-over'); // Remove visual feedback
+            
+            const newParentId = folder.dataset.ownId; // Get the ID of the target folder
+            
+            const fileId = file.id;
+
+            try {
+                const response = await fetch('/move-file', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ fileId, newParentId }),
+                });
+            
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('File moved:', data);
+                    showPopup('File successfully moved!');
+                } else {
+                    console.error('Could not move file:', response.statusText);
+                    showPopup('Could not move file!');
+                }
+                } catch (error) {
+                console.error('Error:', error);
+                showPopup('Error moving file!');
+            }
+        });
+        
+        fileElement.addEventListener('dragend', () => {
+            console.log("Drag ended");
+            displayFilesAndDirectories();
+        });
+    
         const dir = document.querySelector(`[data-own-id="${file.directoryId}"]`);
         if (dir) dir.querySelector('ul').appendChild(fileElement);
     });
-
+    
 }
 
 
@@ -141,9 +193,51 @@ async function traverseDirectories(dirs) {
                 element.classList.remove('selected-folder');
             });
 
-            
             let nearestFolder = findClosestFolderElement(event.target);
             nearestFolder.classList.add('selected-folder');
+        });
+
+        document.querySelectorAll('.directory-folder').forEach(folder => {
+            folder.addEventListener('dragover', (event) => {
+              event.preventDefault(); // Allow drop
+              event.dataTransfer.dropEffect = "move"; // Show move cursor
+            //   folder.classList.add('drag-over'); // Optional: Add visual feedback
+            });
+          
+            folder.addEventListener('dragleave', () => {
+            //   folder.classList.remove('drag-over'); // Remove visual feedback
+            });
+          
+            folder.addEventListener('drop', async (event) => {
+              event.preventDefault();
+            //   folder.classList.remove('drag-over'); // Remove visual feedback
+          
+              const fileId = event.dataTransfer.getData("text/plain");
+              const newParentId = findClosestFolderElement(event.target).dataset.ownId; // Get the ID of the target folder
+          
+              try {
+                const response = await fetch('/move-file', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ fileId, newParentId }),
+                });
+          
+                if (response.ok) {
+                  const data = await response.json();
+                  console.log('File moved:', data);
+                  showPopup('File successfully moved!');
+                  // Optionally, refresh the file list or update the UI here
+                } else {
+                  console.error('Could not move file:', response.statusText);
+                  showPopup('Could not move file!');
+                }
+              } catch (error) {
+                console.error('Error:', error);
+                showPopup('Error moving file!');
+              }
+            });
         });
 
         const folderContainer = document.createElement('details');
@@ -663,6 +757,11 @@ function addEventListenerToOptionsMenu() {
         displayFilesAndDirectories();
 
     });
+
+
+
+
+
 }
 
 addEventListenerToOptionsMenu();

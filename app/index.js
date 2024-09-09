@@ -506,6 +506,31 @@ app.post('/rename-file', async (req, res) => {
   }
 });
 
+app.post('/move-file', async (req, res) => {
+  const { fileId, newParentId } = req.body;
+
+  if (!fileId || !newParentId) {
+    return res.status(400).json({ error: 'File ID and new parent ID are required.' });
+  }
+
+  try {
+    // Find the file in the database
+    const file = await File.findOne({ where: { id: fileId } });
+
+    if (!file) {
+      return res.status(404).json({ error: 'File not found.' });
+    }
+
+    // Update the parentId of the file
+    file.directoryId = newParentId;
+    await file.save();
+
+    res.status(200).json({ message: 'File successfully moved.' });
+  } catch (error) {
+    console.error('Error moving the file:', error);
+    res.status(500).json({ error: 'Error moving the file.' });
+  }
+});
 
 
 app.get('/get-user-by-token', async (req, res) => {

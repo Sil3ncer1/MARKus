@@ -107,6 +107,8 @@
     white-space: nowrap;
     overflow:hidden;
     text-overflow: ellipsis;
+
+    box-sizing: border-box;
 }
 
 .directory-files {
@@ -197,6 +199,8 @@
     display: flex;
     border-radius: .5rem;
     cursor: pointer;
+    pointer-events: none;
+    user-select: none;
 }
 
 #directory-options-menu ul li img{
@@ -211,6 +215,10 @@
     background-color: var(--menuHighlight);
 }
 
+
+.directory-folder.drag-over {
+    border: 2px dashed #fff; /* Highlight folder when dragging over */
+}
 
 @media screen and (max-width:1000px) {
     #directory-button-hitbox {
