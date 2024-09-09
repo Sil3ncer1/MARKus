@@ -148,10 +148,46 @@ saveBtn.addEventListener('click', event => {
             documentText += firstElementChild.outerHTML + "\n";
     }
 
+  
+    if (LOGGED_IN && ACTIVE_FILE != null) {
+        // TODO: SAVE FILES    
+        const filename = document.getElementById('settings-meta-filename');
+        const metadata = document.getElementById('settings-meta');
+        const doc = document.getElementById('document-doc');
 
-    if (ACTIVE_FILE != null) {
-        // TODO: SAVE FILES
-    }
+        let docElements = [];
+
+        let metadataPara = document.createElement('p');
+        metadataPara.textContent = metadata.value;
+        metadataPara.innerHTML = metadataPara.innerHTML.replace(/\n/g, '<br>\n');
+
+        docElements.push(metadataPara);
+
+        for(let i = 0; i < doc.children.length; i++) {
+            const firstElementChild = doc.children[i].firstElementChild;
+            if(firstElementChild !== null) {
+                docElements.push(firstElementChild);
+            }
+        }
+
+        generateMarkdownString(docElements).then(markdownString => {
+                console.log(markdownString);
+                console.log(ACTIVE_FILE); 
+                
+    
+
+                fetch('/saveMarkdown', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: markdownString,
+                        file: ACTIVE_FILE,
+                    }),
+                });
+            });
+        }
 
 
     localStorage.setItem('documentText', documentText);

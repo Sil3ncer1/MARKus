@@ -475,7 +475,7 @@ app.get('/getFileById', async (req, res) => {
       });
 
       if (!file) {
-          return res.status(404).send('Root-Verzeichnis nicht gefunden.');
+          return res.status(404).send('Root-Directory not foyund.');
       }
 
       // Root-Verzeichnis gefunden, sende es zurück
@@ -485,6 +485,35 @@ app.get('/getFileById', async (req, res) => {
       res.status(500).send('Fehler beim Abrufen des Root-Verzeichnisses.');
   }
 });
+
+
+app.post('/saveMarkdown', async (req, res) => {
+  const { content, file } = req.body;
+
+  const FileObject = await File.findOne({
+      where: {
+        id: file
+      }
+  });
+
+  if (!FileObject) {
+    return res.status(404).send('File not Found.');
+  }
+
+  const filePath = path.join(__dirname, 'database/uploads', FileObject.filename);
+
+  fs.writeFile(filePath, content, 'utf8', (err) => {
+    if (err) {
+      console.error('Error writing to the file:', err);
+      return res.status(500).send('Error writing to the file.');
+    }
+
+    res.status(200).send('File successfully updated.');
+  });
+
+});
+
+
 
 
 
