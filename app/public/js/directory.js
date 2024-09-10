@@ -28,7 +28,7 @@ async function fetchUserDirectories(userId) {
         }
 
         const directories = await response.json();
-        console.log('Directories:', directories);
+        // console.log('Directories:', directories);
         return directories;
     } catch (error) {
         console.error('Error fetching directories:', error);
@@ -46,7 +46,7 @@ async function fetchUserFiles(userId) {
         }
     
         const files = await response.json();
-        console.log('Dateien:', files);
+        // console.log('Dateien:', files);
         return files;
     } catch (error) {
         console.error('Error fetching files:', error);
@@ -70,6 +70,8 @@ function findClosestFolderElement(element) {
 let ACTIVE_FILE = null;
 
 async function displayFilesAndDirectories() {
+    if(localStorage.getItem('accessToken') == null)
+        return;
     const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
     const dirs = await fetchUserDirectories(userId);
     const files = await fetchUserFiles(userId);
@@ -77,8 +79,6 @@ async function displayFilesAndDirectories() {
     directoryExplorer.innerHTML = '';
 
     await traverseDirectories(dirs);
-
-    console.log(files);
 
     files.forEach(file =>  {
         const fileElement = document.createElement('li');

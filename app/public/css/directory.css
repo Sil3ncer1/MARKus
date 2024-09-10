@@ -79,6 +79,7 @@
     padding-top: 1rem;
     padding-left: 1rem;
     z-index: 15;
+    transition: 50ms;
 }
 
 #directory-container p{
@@ -88,8 +89,12 @@
 }
 
 #directory-container ul{
-    padding-left: 1rem;
+    padding-left: 0.45rem;
 }
+.directory-folder li {
+    box-shadow: -1px 0 0 hsl(from var(--menuTextColor) h s l / 0.2);
+}
+
 
 
 .directory-folder {
@@ -111,13 +116,12 @@
     box-sizing: border-box;
 }
 
+
+
 .directory-files {
     cursor: pointer;
 
-    list-style-position: inside;
-    list-style-type: circle;
-
-    padding-left: 0.5rem;
+    padding-left: 0.7rem;
 
     font-size: 1.2rem;
 
@@ -126,12 +130,15 @@
     text-overflow: ellipsis;
 }
 
+.directory-files::before {
+    content: "∘"; /* Insert content that looks like bullets */
+    padding-right: 5px;
+    color: var(--menuTextColor); /* Or a color you prefer */
+}
 
 .directory-files:hover, #directory summary:hover{
     background-color: var(--menuHighlight);
 }
-
-
 
 
 #directory-actions {
@@ -163,7 +170,9 @@
     background-color: var(--menuHighlight);
 }
 
-
+#directory-actions img {
+    filter: var(--iconFilter);
+}
 
 #directory-options-menu {
     display: none;

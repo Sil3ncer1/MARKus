@@ -483,14 +483,18 @@ function addEventListenersToTextArea(textarea, id = -1) {
 
       const nextSibling = textcontainer.nextElementSibling;
 
-      const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
-      const dirs = await fetchUserDirectories(userId);
-      const files = await fetchUserFiles(userId);
+      if(localStorage.getItem('accessToken') != null){
+        const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
+        const dirs = await fetchUserDirectories(userId);
+        const files = await fetchUserFiles(userId);
+      }
+      
       
       for (const child of children) {
         const newTag = createHTMLElement(child.outerHTML, "document-editable", id);
         const links = newTag.querySelectorAll('a');
-
+        
+        if(localStorage.getItem('accessToken') != null)
         links.forEach(link => {
             link.addEventListener('click', async function(event) {
               const href = link.getAttribute('href');

@@ -93,6 +93,15 @@ initDatabase().then(() => {
 });
 
 
+const folderName = 'database/uploads';
+try {
+  if (!fs.existsSync(folderName)) {
+    fs.mkdirSync(folderName);
+  }
+} catch (err) {
+  console.error(err);
+}
+
 // Storage configuration for multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
