@@ -159,7 +159,7 @@
     border-radius: .25rem;
 }
 
-.selected-folder summary {
+.selected-folder > details > summary {
     background-color: var(--menuHighlight);
 }
 
