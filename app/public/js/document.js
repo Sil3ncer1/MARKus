@@ -411,8 +411,15 @@ async function replaceElementWithTextarea(clickedElement, atBeginning = false) {
 
 
   try {
-    const fontStyle = window.getComputedStyle(htmlElement).font;
+    const imgs = htmlElement.querySelectorAll('img');
 
+    // Put  Imgs old src back in place
+    imgs.forEach(img => {
+      if(img.getAttribute('oldsrc') != null)
+        img.setAttribute('src', img.getAttribute('oldsrc'));
+    })
+
+    const fontStyle = window.getComputedStyle(htmlElement).font;
     const markdown = await convertHTMLtoMarkdown(htmlElement.outerHTML);
     const textcontainer = createTextcontainer(markdown);
 
@@ -483,10 +490,13 @@ function addEventListenersToTextArea(textarea, id = -1) {
 
       const nextSibling = textcontainer.nextElementSibling;
 
+      let userId;
+      let dirs;
+      let files;
       if(localStorage.getItem('accessToken') != null){
-        const userId = await getUserIdByToken(localStorage.getItem('accessToken'));
-        const dirs = await fetchUserDirectories(userId);
-        const files = await fetchUserFiles(userId);
+        userId = await getUserIdByToken(localStorage.getItem('accessToken'));
+        dirs = await fetchUserDirectories(userId);
+        files = await fetchUserFiles(userId);
       }
       
       
@@ -506,25 +516,47 @@ function addEventListenersToTextArea(textarea, id = -1) {
 
                     event.preventDefault(); // Prevent default link action
                     event.stopPropagation();
-                    const file = findFileByPath(href, dirs, files)
-                    const response = await fetch(`/get-file-from-server/${file.filename}`);
-                    const fileBlob = await response.blob();
-                    
-                    const FileFromSystem = {
-                        blob: fileBlob,
-                        filename: file.filename 
-                    };
-        
-                    const fileObject = new File([FileFromSystem.blob], FileFromSystem.filename, { type: FileFromSystem.blob.type });
-        
-                    handleFiles([fileObject]);
-
-                    console.log('File saved:', FileFromSystem);
-
-                    showPopup("New file loaded: " + file.filename);
+                    const file = findFileByPath(href, dirs, files);
+                    if(file){
+                      const response = await fetch(`/get-file-from-server/${file.filename}`);
+                      const fileBlob = await response.blob();
+                      
+                      const FileFromSystem = {
+                          blob: fileBlob,
+                          filename: file.filename 
+                      };
+          
+                      const fileObject = new File([FileFromSystem.blob], FileFromSystem.filename, { type: FileFromSystem.blob.type });
+          
+                      handleFiles([fileObject]);
+  
+                      console.log('File saved:', FileFromSystem);
+  
+                      showPopup("New file loaded: " + file.filename);
+                    }else
+                    showPopup("No file found under " + href);
                 }
             });
         });
+
+        const imgs = newTag.querySelectorAll('img');
+        if(localStorage.getItem('accessToken') != null)
+          imgs.forEach(async img => {
+            const src = img.getAttribute('src');
+              
+              // Check if the href is a relative URL (doesn't start with 'http', 'https', or '//')
+              const isRelative = !src.startsWith('http') && !src.startsWith('//');
+
+              if (isRelative) {
+
+                const file = findFileByPath(src, dirs, files);
+                if(file){
+                  const response =  await fetch(`/get-file-from-server/${file.filename}`);
+                  img.setAttribute('src', response.url);
+                  img.setAttribute('oldsrc', src);
+                }
+              }
+          });
 
         parentContainer.insertBefore(newTag, nextSibling);
         if(socket) documentChanged(newTag.dataset.id);
@@ -569,7 +601,6 @@ function addEventListenersToTextArea(textarea, id = -1) {
     const pathParts = path.split("/"); // Split the path into parts
     const filename = pathParts.pop(); // Extract the filename (last part)
     let currentDir = dirs.find(dir => dir.parentId === null); // Start from the root directory
-    console.log(currentDir)
 
     // Traverse the directories based on the path
     for (const part of pathParts) {
