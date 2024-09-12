@@ -208,8 +208,8 @@
     display: flex;
     border-radius: .5rem;
     cursor: pointer;
-    pointer-events: none;
-    user-select: none;
+    /* pointer-events: none;
+    user-select: none; */
 }
 
 #directory-options-menu ul li img{
